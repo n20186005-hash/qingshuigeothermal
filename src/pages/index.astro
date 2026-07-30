@@ -1,0 +1,558 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import Icon from '@/components/Icon.astro';
+import {
+  site,
+  quickFacts,
+  cookingSteps,
+  foods,
+  experiences,
+  gallery,
+  routes,
+  faqs,
+} from '@/data/site';
+
+const mapUrl = `https://www.google.com/maps/dir/?api=1&destination=${site.coordinates.lat},${site.coordinates.lng}`;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'TouristAttraction',
+    name: '清水地熱公園',
+    alternateName: 'Qingshui Geothermal Park',
+    description: site.description,
+    url: site.url,
+    image: gallery.map((image) => new URL(image.src, site.url).toString()),
+    telephone: site.phone,
+    isAccessibleForFree: true,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '三星路八段501巷139號',
+      addressLocality: '大同鄉',
+      addressRegion: '宜蘭縣',
+      postalCode: '267',
+      addressCountry: 'TW',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: site.coordinates.lat,
+      longitude: site.coordinates.lng,
+    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        opens: '09:00',
+        closes: '17:00',
+      },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: site.title,
+    url: site.url,
+    inLanguage: 'zh-Hant-TW',
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  },
+];
+---
+<BaseLayout jsonLd={jsonLd}>
+  <div id="top"></div>
+  <Header />
+
+  <main id="main-content">
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-image" src="/images/geothermal-basket.webp" alt="遊客在清水地熱公園以竹簍體驗地熱煮食" width="1600" height="1067" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="steam steam-one" aria-hidden="true"></div>
+      <div class="steam steam-two" aria-hidden="true"></div>
+      <div class="shell hero-content">
+        <p class="eyebrow light">宜蘭・大同鄉・清水溪谷</p>
+        <h1 id="hero-title">山谷裡的<br /><em>天然廚房</em></h1>
+        <p class="hero-lead">把雞蛋與玉米放進近沸騰的地熱泉，在白色蒸氣與山林之間，完成一頓最有宜蘭味的野餐。</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#timer">開啟煮食計時器 <Icon name="arrow" class="size-5" /></a>
+          <a class="button button-ghost" href="#quick-info">先看行前資訊</a>
+        </div>
+      </div>
+      <div class="shell hero-meta" aria-label="景點摘要">
+        <div><span>泉溫</span><strong>約 95°C</strong></div>
+        <div><span>門票</span><strong>免費入園</strong></div>
+        <div><span>停留</span><strong>2–3 小時</strong></div>
+        <div><span>適合</span><strong>親子・朋友・長輩</strong></div>
+      </div>
+    </section>
+
+    <section class="summer-notice" aria-labelledby="summer-notice-title">
+      <div class="shell summer-notice-inner">
+        <div class="notice-date"><span>2026</span><strong>暑期</strong></div>
+        <div class="notice-copy">
+          <p class="eyebrow">SEASONAL HOURS</p>
+          <h2 id="summer-notice-title">7/20–8/31 延長開放至 08:00–18:00</h2>
+          <p>一般營運時間通常為 09:00–17:00。山區天候、颱風或設備維護可能影響開園，出發當日仍建議再次確認。</p>
+        </div>
+        <div class="notice-status"><span class="status-dot"></span><span>資料核對：{site.lastVerified}</span></div>
+      </div>
+    </section>
+
+    <section class="section quick-section" id="quick-info" aria-labelledby="quick-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">BEFORE YOU GO</p>
+            <h2 id="quick-title">先把最重要的事<br />裝進口袋</h2>
+          </div>
+          <p>清水地熱的樂趣很簡單，但抵達時間、食材與安全準備會直接影響體驗。以下資訊適合在出發前快速掃一遍。</p>
+        </div>
+        <div class="fact-grid">
+          {quickFacts.map((fact) => (
+            <article class="fact-card">
+              <span class="fact-icon"><Icon name={fact.icon} class="size-6" /></span>
+              <p>{fact.label}</p>
+              <strong>{fact.value}</strong>
+              <small>{fact.note}</small>
+            </article>
+          ))}
+        </div>
+        <div class="arrival-tip">
+          <div class="tip-symbol"><span>早</span></div>
+          <div>
+            <p class="eyebrow">BEST ARRIVAL</p>
+            <h3>平日 08:00–09:30；假日盡量開園前後抵達</h3>
+            <p>比較容易停車、找到座位，也能避開中午煮食區最悶熱與最擁擠的時段。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cooking-section" id="cooking" aria-labelledby="cooking-title">
+      <div class="shell">
+        <div class="section-heading centered-heading">
+          <p class="eyebrow">GEOTHERMAL COOKING</p>
+          <h2 id="cooking-title">第一次來，照著這樣煮</h2>
+          <p>不用複雜器材，重點是分好熟成時間、記住竹簍編號，並把高溫操作交給成人。</p>
+        </div>
+        <ol class="steps-grid">
+          {cookingSteps.map((step) => (
+            <li class="step-card">
+              <span class="step-number">{step.number}</span>
+              <div class="step-line" aria-hidden="true"></div>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section timer-section" id="timer" aria-labelledby="timer-title">
+      <div class="shell timer-shell">
+        <div class="timer-intro">
+          <p class="eyebrow light">ON-SITE TOOL</p>
+          <h2 id="timer-title">地熱煮食<br /><em>多工計時器</em></h2>
+          <p>一次追蹤多種食材，離開頁面分頁後仍會依開始時間繼續倒數。提示時間僅作輔助，請以現場標示與食材熟度為準。</p>
+          <div class="timer-note">
+            <Icon name="info" class="size-5" />
+            <span>聲音提醒需先在頁面上操作一次，手機才允許播放。</span>
+          </div>
+        </div>
+        <div class="timer-panel" data-timer-app>
+          <div class="timer-picker" aria-label="選擇食材">
+            {foods.map((food) => (
+              <button type="button" class="food-button" data-food-id={food.id} data-food-name={food.name} data-minutes={food.minutes}>
+                <span aria-hidden="true">{food.emoji}</span>
+                <strong>{food.name}</strong>
+                <small>{food.minutes} 分</small>
+              </button>
+            ))}
+          </div>
+          <div class="active-timers" data-active-timers aria-live="polite">
+            <div class="timer-empty" data-timer-empty>
+              <span class="empty-steam" aria-hidden="true">≈</span>
+              <p>點選上方食材，開始第一個倒數。</p>
+            </div>
+          </div>
+          <template id="timer-template">
+            <article class="active-timer" data-timer-item>
+              <div class="active-timer-top">
+                <div><span class="timer-emoji" data-timer-emoji></span><strong data-timer-name></strong></div>
+                <button type="button" class="timer-remove" data-timer-remove aria-label="移除計時器">×</button>
+              </div>
+              <div class="timer-display" data-timer-display>00:00</div>
+              <div class="timer-progress"><span data-timer-progress></span></div>
+              <div class="timer-controls">
+                <button type="button" data-timer-toggle><Icon name="pause" class="size-4" /><span>暫停</span></button>
+                <button type="button" data-timer-reset><Icon name="reset" class="size-4" /><span>重設</span></button>
+              </div>
+            </article>
+          </template>
+        </div>
+      </div>
+    </section>
+
+    <section class="section food-section" aria-labelledby="food-title">
+      <div class="shell">
+        <div class="section-heading split-heading compact-heading">
+          <div>
+            <p class="eyebrow">COOKING CHEAT SHEET</p>
+            <h2 id="food-title">帶什麼最好煮？</h2>
+          </div>
+          <p>越簡單、越容易熟透的食材越適合。以下為行前抓時間用的參考值，不取代現場說明。</p>
+        </div>
+        <div class="food-grid">
+          {foods.map((food) => (
+            <article class="food-card">
+              <div class="food-card-top"><span>{food.emoji}</span><small>{food.label}</small></div>
+              <h3>{food.name}</h3>
+              <p class="food-time"><strong>{food.minutes}</strong><span>分鐘<br />參考</span></p>
+              <p>{food.hint}</p>
+            </article>
+          ))}
+        </div>
+        <p class="fine-print">※ 池溫、食材大小與竹簍內數量都會影響時間；肉類、蛋類與根莖類食用前務必確認完全熟透。</p>
+      </div>
+    </section>
+
+    <section class="section experience-section" aria-labelledby="experience-title">
+      <div class="shell">
+        <div class="section-heading centered-heading">
+          <p class="eyebrow">MORE THAN BOILED EGGS</p>
+          <h2 id="experience-title">等待的時間，也很好玩</h2>
+        </div>
+        <div class="experience-list">
+          {experiences.map((experience, index) => (
+            <article class:list={['experience-card', index % 2 === 1 && 'reverse']}>
+              <div class="experience-image-wrap">
+                <img src={experience.image} alt={experience.alt} width="1280" height="853" loading="lazy" />
+                <span class="experience-index">0{index + 1}</span>
+              </div>
+              <div class="experience-copy">
+                <p class="eyebrow">{experience.kicker}</p>
+                <h3>{experience.title}</h3>
+                <p>{experience.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="safety-section" aria-labelledby="safety-title">
+      <div class="shell safety-shell">
+        <div class="safety-icon"><Icon name="shield" class="size-10" /></div>
+        <div>
+          <p class="eyebrow light">HOT WATER SAFETY</p>
+          <h2 id="safety-title">蒸氣很美，泉水真的很燙</h2>
+          <p>煮食池接近沸騰。兒童不可獨立提放竹簍，取出時要避開熱水滴落方向；雨天留意濕滑，身體不適或有開放性傷口時不要泡腳。</p>
+        </div>
+        <ul>
+          <li>成人操作竹簍</li>
+          <li>不使用塑膠籃</li>
+          <li>食材完全熟透</li>
+          <li>豪雨颱風不前往</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section transport-section" id="transport" aria-labelledby="transport-title">
+      <div class="shell transport-shell">
+        <div class="transport-copy">
+          <p class="eyebrow">GETTING THERE</p>
+          <h2 id="transport-title">藏在溪谷裡，<br />自駕最輕鬆</h2>
+          <p>從羅東、三星方向前往較順。最後一段為山區道路，假日容易在入口前排隊；不開車可查詢綠 17，但班次與預約規則需在出發日確認。</p>
+          <div class="transport-actions">
+            <a class="button button-dark" href={mapUrl} target="_blank" rel="noopener noreferrer">開啟地圖導航 <Icon name="external" class="size-4" /></a>
+            <button class="button button-outline" type="button" data-copy-address data-address={site.address}>複製地址 <Icon name="copy" class="size-4" /></button>
+          </div>
+          <p class="copy-feedback" data-copy-feedback aria-live="polite"></p>
+        </div>
+        <div class="transport-cards">
+          <article>
+            <span><Icon name="car" class="size-6" /></span>
+            <div><p>停車參考</p><strong>小客車每次 NT$50</strong><small>機車常見為每次 NT$20；以現場公告為準。</small></div>
+          </article>
+          <article>
+            <span><Icon name="clock" class="size-6" /></span>
+            <div><p>避開人潮</p><strong>上午開園前後抵達</strong><small>假日中午通常最容易遇到車位與座位壓力。</small></div>
+          </article>
+          <article>
+            <span><Icon name="map" class="size-6" /></span>
+            <div><p>導航地址</p><strong>{site.address}</strong><small>座標 {site.coordinates.lat}, {site.coordinates.lng}</small></div>
+          </article>
+          <article>
+            <span><Icon name="phone" class="size-6" /></span>
+            <div><p>園區電話</p><strong><a href={`tel:${site.phone.replaceAll('-', '')}`}>{site.phone}</a></strong><small>專程泡湯或遇特殊天候，建議先確認。</small></div>
+          </article>
+        </div>
+        <div class="transport-map">
+          <div class="transport-map-heading">
+            <div>
+              <p class="eyebrow">LOCATION MAP</p>
+              <h3>清水地熱公園位置</h3>
+            </div>
+            <p>可拖曳地圖查看周邊道路，點擊「查看較大的地圖」可開啟完整導航。</p>
+          </div>
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3627.3444930501378!2d121.63656530000002!3d24.6118089!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3468711555555555%3A0x515691ccf0d8cd0d!2z5riF5rC05Zyw54Ot5YWs5Zut!5e0!3m2!1szh-TW!2stw!4v1785383449050!5m2!1szh-TW!2stw"
+            width="600"
+            height="450"
+            style="border:0;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            title="清水地熱公園 Google 地圖"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="section gallery-section" aria-labelledby="gallery-title">
+      <div class="shell">
+        <div class="section-heading split-heading compact-heading">
+          <div>
+            <p class="eyebrow">REAL SCENES</p>
+            <h2 id="gallery-title">先看見蒸氣裡的清水溪谷</h2>
+          </div>
+          <p>以下皆為清水地熱公園與地熱區實景，已下載至本站本地，不依賴外部圖片服務。</p>
+        </div>
+        <div class="gallery-grid">
+          {gallery.map((image, index) => (
+            <button type="button" class:list={['gallery-item', `gallery-item-${index + 1}`]} data-gallery-index={index} aria-label={`放大照片：${image.alt}`}>
+              <img src={image.src} alt={image.alt} width="1280" height={index === 1 ? 960 : 853} loading="lazy" />
+              <span>{image.caption}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <dialog class="lightbox" data-lightbox>
+        <button type="button" class="lightbox-close" data-lightbox-close aria-label="關閉照片">×</button>
+        <button type="button" class="lightbox-nav prev" data-lightbox-prev aria-label="上一張照片">‹</button>
+        <figure><img src="" alt="" data-lightbox-image /><figcaption data-lightbox-caption></figcaption></figure>
+        <button type="button" class="lightbox-nav next" data-lightbox-next aria-label="下一張照片">›</button>
+      </dialog>
+    </section>
+
+    <section class="section route-section" aria-labelledby="route-title">
+      <div class="shell route-shell">
+        <div class="route-intro">
+          <p class="eyebrow light">ONE DAY IN SANXING</p>
+          <h2 id="route-title">從一顆溫泉蛋，<br />排成宜蘭山線一日</h2>
+          <p>這條路線減少折返，適合第一次到三星、大同一帶的親子或朋友同行。</p>
+        </div>
+        <ol class="route-timeline">
+          {routes.map((route, index) => (
+            <li>
+              <time>{route.time}</time>
+              <span class="route-dot" aria-hidden="true"></span>
+              <div><strong>{route.title}</strong><p>{route.meta}</p></div>
+              {index < routes.length - 1 && <span class="route-line" aria-hidden="true"></span>}
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section faq-section" id="faq" aria-labelledby="faq-title">
+      <div class="shell faq-shell">
+        <div class="faq-heading">
+          <p class="eyebrow">QUESTIONS BEFORE DEPARTURE</p>
+          <h2 id="faq-title">出發前，還會想問這些</h2>
+          <p>資訊可能因季節、天候或現場營運調整。本站會標示核對日期，但臨時公告仍以園區為準。</p>
+        </div>
+        <div class="faq-list">
+          {faqs.map((faq, index) => (
+            <details open={index === 0}>
+              <summary><span>{String(index + 1).padStart(2, '0')}</span>{faq.question}<span class="faq-plus" aria-hidden="true"></span></summary>
+              <div><p>{faq.answer}</p></div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="closing-section">
+      <img src="/images/geothermal-cooking.webp" alt="清水地熱公園竹簍煮食實景" width="1280" height="853" loading="lazy" />
+      <div class="closing-shade"></div>
+      <div class="shell closing-content">
+        <p class="eyebrow light">READY FOR THE VALLEY?</p>
+        <h2>帶一籃食材，<br />去山谷裡吃早餐。</h2>
+        <div>
+          <a class="button button-primary" href={mapUrl} target="_blank" rel="noopener noreferrer">導航到清水地熱 <Icon name="external" class="size-4" /></a>
+          <span>最後核對：{site.lastVerified}</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script define:vars={{ gallery }}>
+    // Copy address without requesting browser permissions beyond a user gesture.
+    const copyButton = document.querySelector('[data-copy-address]');
+    const copyFeedback = document.querySelector('[data-copy-feedback]');
+    copyButton?.addEventListener('click', async () => {
+      const address = copyButton.getAttribute('data-address') || '';
+      try {
+        await navigator.clipboard.writeText(address);
+        if (copyFeedback) copyFeedback.textContent = '地址已複製。';
+      } catch {
+        if (copyFeedback) copyFeedback.textContent = `請手動複製：${address}`;
+      }
+    });
+
+    // Local image lightbox.
+    const lightbox = document.querySelector('[data-lightbox]');
+    const lightboxImage = document.querySelector('[data-lightbox-image]');
+    const lightboxCaption = document.querySelector('[data-lightbox-caption]');
+    let activeGalleryIndex = 0;
+
+    const renderLightbox = () => {
+      const item = gallery[activeGalleryIndex];
+      if (lightboxImage instanceof HTMLImageElement) {
+        lightboxImage.src = item.src;
+        lightboxImage.alt = item.alt;
+      }
+      if (lightboxCaption) lightboxCaption.textContent = item.caption;
+    };
+
+    document.querySelectorAll('[data-gallery-index]').forEach((button) => {
+      button.addEventListener('click', () => {
+        activeGalleryIndex = Number(button.getAttribute('data-gallery-index')) || 0;
+        renderLightbox();
+        if (lightbox instanceof HTMLDialogElement) lightbox.showModal();
+      });
+    });
+    document.querySelector('[data-lightbox-close]')?.addEventListener('click', () => {
+      if (lightbox instanceof HTMLDialogElement) lightbox.close();
+    });
+    document.querySelector('[data-lightbox-prev]')?.addEventListener('click', () => {
+      activeGalleryIndex = (activeGalleryIndex - 1 + gallery.length) % gallery.length;
+      renderLightbox();
+    });
+    document.querySelector('[data-lightbox-next]')?.addEventListener('click', () => {
+      activeGalleryIndex = (activeGalleryIndex + 1) % gallery.length;
+      renderLightbox();
+    });
+    lightbox?.addEventListener('click', (event) => {
+      if (event.target === lightbox && lightbox instanceof HTMLDialogElement) lightbox.close();
+    });
+
+    // Multi-food timer. State remains in memory only; no database or local storage.
+    const timerApp = document.querySelector('[data-timer-app]');
+    const timersContainer = document.querySelector('[data-active-timers]');
+    const emptyState = document.querySelector('[data-timer-empty]');
+    const template = document.querySelector('#timer-template');
+    const foodEmoji = Object.fromEntries(gallery.length ? [
+      ['egg', '🥚'], ['corn', '🌽'], ['bamboo', '🎋'], ['sweet-potato', '🍠'], ['taro', '🟣'], ['peanut', '🥜']
+    ] : []);
+    const timers = new Map();
+    let audioContext;
+
+    const beep = () => {
+      try {
+        audioContext ||= new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        oscillator.frequency.value = 880;
+        gain.gain.setValueAtTime(0.001, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.18, audioContext.currentTime + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.45);
+        oscillator.connect(gain).connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.5);
+      } catch {}
+    };
+
+    const formatTime = (seconds) => {
+      const safe = Math.max(0, Math.ceil(seconds));
+      return `${String(Math.floor(safe / 60)).padStart(2, '0')}:${String(safe % 60).padStart(2, '0')}`;
+    };
+
+    const updateEmptyState = () => emptyState?.toggleAttribute('hidden', timers.size > 0);
+
+    const updateTimer = (timer) => {
+      if (!timer.paused) {
+        timer.remaining = Math.max(0, (timer.endAt - Date.now()) / 1000);
+      }
+      timer.display.textContent = timer.remaining <= 0 ? '完成！' : formatTime(timer.remaining);
+      timer.progress.style.width = `${Math.max(0, Math.min(100, (timer.remaining / timer.total) * 100))}%`;
+      timer.element.classList.toggle('is-finished', timer.remaining <= 0);
+      if (timer.remaining <= 0 && !timer.alerted) {
+        timer.alerted = true;
+        beep();
+        if ('vibrate' in navigator) navigator.vibrate([180, 80, 180]);
+      }
+    };
+
+    const createTimer = (button) => {
+      if (!(template instanceof HTMLTemplateElement) || !timersContainer) return;
+      const id = button.dataset.foodId;
+      const name = button.dataset.foodName;
+      const minutes = Number(button.dataset.minutes);
+      if (!id || !name || !minutes) return;
+
+      const existing = timers.get(id);
+      if (existing) {
+        existing.element.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.025)' }, { transform: 'scale(1)' }], { duration: 280 });
+        return;
+      }
+
+      const fragment = template.content.cloneNode(true);
+      const element = fragment.querySelector('[data-timer-item]');
+      const display = fragment.querySelector('[data-timer-display]');
+      const progress = fragment.querySelector('[data-timer-progress]');
+      const toggle = fragment.querySelector('[data-timer-toggle]');
+      const toggleLabel = toggle?.querySelector('span');
+      const nameNode = fragment.querySelector('[data-timer-name]');
+      const emojiNode = fragment.querySelector('[data-timer-emoji]');
+      const total = minutes * 60;
+      const timer = {
+        id, name, total, remaining: total, endAt: Date.now() + total * 1000,
+        paused: false, alerted: false, element, display, progress, toggle, toggleLabel
+      };
+
+      nameNode.textContent = name;
+      emojiNode.textContent = foodEmoji[id] || '♨️';
+      timers.set(id, timer);
+      timersContainer.appendChild(fragment);
+      updateEmptyState();
+      updateTimer(timer);
+
+      element.querySelector('[data-timer-remove]')?.addEventListener('click', () => {
+        timers.delete(id);
+        element.remove();
+        updateEmptyState();
+      });
+      toggle?.addEventListener('click', () => {
+        timer.paused = !timer.paused;
+        if (!timer.paused) timer.endAt = Date.now() + timer.remaining * 1000;
+        toggleLabel.textContent = timer.paused ? '繼續' : '暫停';
+        toggle.querySelector('svg')?.classList.toggle('is-playing', timer.paused);
+      });
+      element.querySelector('[data-timer-reset]')?.addEventListener('click', () => {
+        timer.remaining = timer.total;
+        timer.endAt = Date.now() + timer.total * 1000;
+        timer.paused = false;
+        timer.alerted = false;
+        toggleLabel.textContent = '暫停';
+        updateTimer(timer);
+      });
+    };
+
+    timerApp?.querySelectorAll('[data-food-id]').forEach((button) => {
+      button.addEventListener('click', () => createTimer(button));
+    });
+
+    window.setInterval(() => timers.forEach(updateTimer), 250);
+  </script>
+</BaseLayout>

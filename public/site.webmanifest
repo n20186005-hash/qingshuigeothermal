@@ -1,0 +1,12 @@
+{
+  "name": "清水地熱公園旅遊指南",
+  "short_name": "清水地熱",
+  "lang": "zh-Hant-TW",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f5f4ed",
+  "theme_color": "#153b32",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

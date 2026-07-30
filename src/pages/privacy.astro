@@ -1,0 +1,29 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+---
+<BaseLayout title="隱私權說明" description="QingshuiGeothermal.com 隱私權與網站分析說明。" noindex={true}>
+  <Header />
+  <main id="main-content" class="legal-page">
+    <div class="shell legal-shell">
+      <p class="eyebrow">PRIVACY</p>
+      <h1>隱私權說明</h1>
+      <p class="legal-lead">本站不提供會員、登入、留言或線上交易功能，也不建立自有使用者資料庫。</p>
+      <section>
+        <h2>網站分析</h2>
+        <p>本站使用 Google Analytics 4（評估 ID：G-HXM22WWPKP）了解頁面瀏覽、裝置類型與內容使用情況，以改善旅遊資訊。分析服務可能透過瀏覽器技術處理匿名或彙整資料。</p>
+      </section>
+      <section>
+        <h2>外部連結</h2>
+        <p>主頁僅在導航需求下連至地圖服務；照片來源與授權網址集中於照片授權頁。離開本站後，適用各服務自己的隱私權政策。</p>
+      </section>
+      <section>
+        <h2>資料正確性</h2>
+        <p>景點營運資訊可能因天候、維修與政策調整而變動。本站為獨立旅遊資訊整理，不代表園區或政府機關。</p>
+      </section>
+      <a class="button button-dark" href="/">返回首頁</a>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

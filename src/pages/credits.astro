@@ -1,0 +1,37 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+---
+<BaseLayout title="照片授權" description="本站使用的清水地熱公園實景照片來源與授權說明。" noindex={true}>
+  <Header />
+  <main id="main-content" class="legal-page">
+    <div class="shell legal-shell">
+      <p class="eyebrow">IMAGE CREDITS</p>
+      <h1>照片授權</h1>
+      <p class="legal-lead">首頁照片均為清水地熱公園或清水地熱區實景，下載後僅進行尺寸調整、裁切與壓縮。為讓主頁保持乾淨，授權連結集中列於本頁。</p>
+
+      <section>
+        <h2>Rick888chen｜CC BY-SA 4.0</h2>
+        <ul>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Yilan_Qingshui_Geothermal_Park_1.jpg" target="_blank" rel="noopener noreferrer">Yilan Qingshui Geothermal Park 1</a></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Yilan_Qingshui_Geothermal_Park_2.jpg" target="_blank" rel="noopener noreferrer">Yilan Qingshui Geothermal Park 2</a></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Yilan_Qingshui_Geothermal_Park_3.jpg" target="_blank" rel="noopener noreferrer">Yilan Qingshui Geothermal Park 3</a></li>
+        </ul>
+        <p>授權：<a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution-ShareAlike 4.0</a></p>
+      </section>
+
+      <section>
+        <h2>lienyuan lee｜CC BY 3.0</h2>
+        <ul>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Qingshui_Geothermal_Park_%E6%B8%85%E6%B0%B4%E5%9C%B0%E7%86%B1%E5%85%AC%E5%9C%92_-_panoramio.jpg" target="_blank" rel="noopener noreferrer">Qingshui Geothermal Park – panoramio</a></li>
+          <li><a href="https://commons.wikimedia.org/wiki/File:Qingshui_Geothermal_Field_%E6%B8%85%E6%B0%B4%E5%9C%B0%E7%86%B1_-_panoramio.jpg" target="_blank" rel="noopener noreferrer">Qingshui Geothermal Field – panoramio</a></li>
+        </ul>
+        <p>授權：<a href="https://creativecommons.org/licenses/by/3.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 3.0</a></p>
+      </section>
+
+      <a class="button button-dark" href="/">返回首頁</a>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

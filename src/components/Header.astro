@@ -1,0 +1,58 @@
+---
+import Icon from './Icon.astro';
+import { navigation, site } from '@/data/site';
+---
+<header class="site-header" data-header>
+  <div class="shell header-inner">
+    <a class="brand" href="/" aria-label={`${site.title}首頁`}>
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 44 44"><path d="M10 29c7-7 17-8 24-3-5-10-15-15-25-12 8 2 12 8 13 13-5-3-9-3-12 2Z" fill="currentColor"/><path d="M15 11c0-3 2-5 4-7m5 8c0-4 2-7 5-9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" opacity=".65"/></svg>
+      </span>
+      <span>
+        <strong>清水地熱</strong>
+        <small>QINGSHUI GEOTHERMAL</small>
+      </span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="主要導覽">
+      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+    </nav>
+
+    <a class="header-cta" href="#transport">
+      <Icon name="route" class="size-4" />
+      規劃前往
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <span class="sr-only">開啟選單</span>
+      <Icon name="menu" class="size-6 menu-open-icon" />
+      <Icon name="close" class="size-6 menu-close-icon" />
+    </button>
+  </div>
+  <nav class="mobile-menu" id="mobile-menu" aria-label="行動版導覽" data-mobile-menu>
+    <div class="shell">
+      {navigation.map((item) => <a href={item.href}>{item.label}<Icon name="arrow" class="size-4" /></a>)}
+    </div>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+  const header = document.querySelector<HTMLElement>('[data-header]');
+
+  toggle?.addEventListener('click', () => {
+    const expanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!expanded));
+    menu?.classList.toggle('is-open', !expanded);
+  });
+
+  menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+    toggle?.setAttribute('aria-expanded', 'false');
+    menu.classList.remove('is-open');
+  }));
+
+  const updateHeader = () => header?.classList.toggle('is-scrolled', window.scrollY > 24);
+  updateHeader();
+  window.addEventListener('scroll', updateHeader, { passive: true });
+</script>
