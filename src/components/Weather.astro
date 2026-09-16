@@ -1,0 +1,380 @@
+---
+// 伺服器端天氣模組：於 Workers 端向天氣服務取得即時與未來多日預報，
+// 並以模組層級快取降低重複請求。頁面不展示任何介面或金鑰相關說明。
+import { site } from '@/data/site';
+
+const { lat, lng } = site.coordinates;
+const apiUrl =
+  `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}` +
+  `&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m,wind_gusts_10m` +
+  `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,uv_index_max,wind_speed_10m_max,wind_gusts_10m_max,sunrise,sunset` +
+  `&timezone=Asia%2FTaipei&forecast_days=7&wind_speed_unit=ms`;
+
+type WeatherData = {
+  current?: Record<string, number>;
+  daily?: Record<string, (number | string)[]>;
+};
+
+interface WeatherCache {
+  data: WeatherData;
+  fetchedAt: number;
+}
+
+const CACHE_TTL = 30 * 60 * 1000; // 30 分鐘
+const store = (globalThis as { __qsWeather?: WeatherCache }).__qsWeather;
+const now = Date.now();
+let data: WeatherData | null = store?.data ?? null;
+let fetchedAt = store?.fetchedAt ?? 0;
+
+if (!data || now - fetchedAt > CACHE_TTL) {
+  try {
+    const res = await fetch(apiUrl, { signal: AbortSignal.timeout(8000) });
+    if (res.ok) {
+      const json = (await res.json()) as WeatherData;
+      data = { current: json.current, daily: json.daily };
+      fetchedAt = now;
+      (globalThis as { __qsWeather?: WeatherCache }).__qsWeather = { data, fetchedAt };
+    }
+  } catch {
+    data = store?.data ?? null;
+  }
+}
+
+const weekday = ['日', '一', '二', '三', '四', '五', '六'];
+
+const describe = (code: number): { label: string; emoji: string } => {
+  if (code === 0) return { label: '晴朗', emoji: '☀️' };
+  if (code === 1) return { label: '多雲時晴', emoji: '🌤️' };
+  if (code === 2) return { label: '多雲', emoji: '⛅' };
+  if (code === 3) return { label: '陰天', emoji: '☁️' };
+  if (code === 45 || code === 48) return { label: '有霧', emoji: '🌫️' };
+  if (code >= 51 && code <= 57) return { label: '細雨', emoji: '🌦️' };
+  if (code >= 61 && code <= 67) return { label: '降雨', emoji: '🌧️' };
+  if (code >= 71 && code <= 77) return { label: '降雪', emoji: '🌨️' };
+  if (code >= 80 && code <= 82) return { label: '陣雨', emoji: '🌦️' };
+  if (code >= 85 && code <= 86) return { label: '陣雪', emoji: '🌨️' };
+  if (code >= 95) return { label: '雷陣雨', emoji: '⛈️' };
+  return { label: '多雲', emoji: '⛅' };
+};
+
+// 雨勢分級：0 無雨 / 1 小雨 / 2 中雨 / 3 大雨 / 4 雷雨
+const rainLevel = (code: number): number => {
+  if (code >= 95) return 4;
+  if (code === 55 || code === 65 || code === 67 || code === 82) return 3;
+  if (code === 53 || code === 57 || code === 63 || code === 66 || code === 81 || code === 86) return 2;
+  if (code === 51 || code === 56 || code === 61 || code === 80 || code === 85) return 1;
+  return 0;
+};
+const isThunder = (code: number) => code >= 95;
+const isFog = (code: number) => code === 45 || code === 48;
+
+// 蒲福風級（m/s → 級）
+const beaufort = (ms: number): number => {
+  const thresholds = [0.3, 1.6, 3.4, 5.5, 8.0, 10.8, 13.9, 17.2, 20.8, 24.5, 28.5, 32.7];
+  let level = 0;
+  while (level < thresholds.length && ms >= thresholds[level]) level += 1;
+  return level;
+};
+
+const current = data?.current;
+const daily = data?.daily;
+
+const currentCode = current ? Number(current.weather_code) : Number(daily?.weather_code?.[0] ?? 3);
+const todayCode = Number(daily?.weather_code?.[0] ?? 3);
+const currentInfo = describe(currentCode);
+
+const todayMin = Math.round(Number(daily?.temperature_2m_min?.[0] ?? 0));
+const todayMax = Math.round(Number(daily?.temperature_2m_max?.[0] ?? 0));
+const pop = Math.round(Number(daily?.precipitation_probability_max?.[0] ?? 0));
+const humidity = Math.round(Number(current?.relative_humidity_2m ?? 0));
+const precipSum = Number(daily?.precipitation_sum?.[0] ?? 0);
+const uv = Number(daily?.uv_index_max?.[0] ?? 0);
+const windMax = Number(daily?.wind_speed_10m_max?.[0] ?? 0);
+const gustMax = Number(daily?.wind_gusts_10m_max?.[0] ?? 0);
+
+// 取當下與整日中較嚴重的狀況，避免「現在出太陽但午後雷雨」被忽略
+const level = Math.max(rainLevel(currentCode), rainLevel(todayCode));
+const thunder = isThunder(currentCode) || isThunder(todayCode);
+const fog = isFog(currentCode) || isFog(todayCode);
+const noRain = level === 0;
+const isClear = noRain && !fog && (todayCode === 0 || todayCode === 1);
+const isCloudy = noRain && !fog && (todayCode === 2 || todayCode === 3);
+const diff = todayMax - todayMin;
+const windLevel = beaufort(windMax);
+
+const uvText = uv >= 8 ? '紫外線甚強' : uv >= 6 ? '紫外線強' : uv >= 3 ? '紫外線中等' : '紫外線弱';
+const windText = windLevel >= 7 ? '強風' : windLevel >= 5 ? '風力偏大' : windLevel >= 3 ? '和風' : '微風';
+
+// ── 智慧建議引擎：依天氣條件組合輸出，未觸發的項目直接不顯示 ──────────
+const advice = (() => {
+  const risks: { title: string; text: string }[] = [];
+  const dress: string[] = [];
+  const plan: string[] = [];
+  const items: string[] = [];
+
+  // 風險提醒（有才出現，置頂）
+  if (thunder) {
+    risks.push({
+      title: '雷雨與雷擊風險',
+      text: '溪谷與煮食區較空曠，遇雷請遠離水面、高處與大樹下，並暫停戶外煮食，等雷雨通過再移動。',
+    });
+  }
+  if (precipSum >= 50 || (level >= 3 && pop >= 80)) {
+    risks.push({
+      title: '豪雨與溪水暴漲風險',
+      text: '山區強降雨可能讓清水溪水位快速上升，請勿靠近溪床與低窪地，並留意道路落石、坍方與園區休園公告。',
+    });
+  } else if (level >= 3) {
+    risks.push({
+      title: '雨勢偏大',
+      text: '園區石板與棧道濕滑，煮食區動線請放慢腳步；山區道路視線差，行車務必減速。',
+    });
+  }
+  if (gustMax >= 24.5) {
+    risks.push({
+      title: '強風／颱風等級陣風',
+      text: '請遠離臨時設施、樹木與溪谷邊坡，避免前往山區；建議調整行程並留意休園公告。',
+    });
+  } else if (windMax >= 13.9) {
+    risks.push({
+      title: '風力明顯偏強',
+      text: '帽子與輕物容易被吹落，蒸氣與水花會被吹散；煮食操作與拍照請留意自身與他人安全。',
+    });
+  }
+  if (todayMax >= 36) {
+    risks.push({
+      title: '高溫警示',
+      text: '地熱煮食區體感更悶熱，請縮短停留時間、持續補充水分，留意中暑徵兆。',
+    });
+  }
+  if (fog) {
+    risks.push({
+      title: '濃霧影響能見度',
+      text: '山區道路與溪谷視線不佳，請放慢車速並開啟霧燈；遠景拍攝效果也會明顯受限。',
+    });
+  }
+
+  // 出行穿搭
+  if (diff > 8) {
+    dress.push(`山區日夜溫差約 ${diff}°C，採洋蔥式穿搭，隨身帶一件薄外套方便增減。`);
+  } else if (todayMax >= 32) {
+    dress.push('氣溫偏高，穿輕薄透氣的衣物，建議戴帽子遮陽。');
+  } else if (todayMin <= 10) {
+    dress.push('氣溫偏低，穿厚外套並搭配圍巾、手套；溪谷邊體感會再低一些。');
+  } else if (todayMax <= 20) {
+    dress.push('天氣偏涼，帶一件防風保暖外套，靠近溪邊與傍晚會更冷。');
+  } else {
+    dress.push('氣溫舒適，一般輕便服裝即可，山區建議多備一件薄外套。');
+  }
+  if (level >= 3) {
+    dress.push('雨勢明顯，建議穿防水外套與防滑鞋，避免棉質衣物淋濕後失溫。');
+  } else if (level === 2) {
+    dress.push('會下雨，帶一件防潑水外套替換，鞋子選好走的防滑款。');
+  } else if (level === 1) {
+    dress.push('可能有短暫小雨，準備輕便雨衣或防潑水外套最方便。');
+  }
+
+  // 遊玩安排
+  if (thunder) {
+    plan.push('不建議前往溪谷與空曠煮食區，建議等雷雨通過後再安排入園。');
+  } else if (level >= 3) {
+    plan.push('大雨會讓煮食與散步體驗大打折扣，建議改期或大幅縮短停留時間。');
+  } else if (level === 2) {
+    plan.push('有雨時煮食區部分有遮蔽，但仍建議縮短戶外時間，並留意地面濕滑。');
+  } else if (level === 1) {
+    plan.push('短暫小雨不影響煮食，記得留意石板濕滑與池邊高溫蒸氣。');
+  } else if (pop >= 60) {
+    plan.push('降雨機率偏高，行程保留彈性，優先安排有遮蔽的煮食區與足湯。');
+  } else if (isClear) {
+    plan.push('天氣穩定，很適合安排地熱煮食、溪谷散步與泡腳。');
+  } else if (isCloudy) {
+    plan.push('陰天光線柔和、沒有曝曬，適合長時間戶外逛遊與拍照。');
+  }
+  if (!thunder && level <= 1 && todayMin <= 16) {
+    plan.push('氣溫較低時白色蒸氣最明顯，是拍攝地熱煙霧的好時機，足湯也更舒服。');
+  } else if (!thunder && level <= 1 && humidity >= 80) {
+    plan.push('濕度高時蒸氣更濃白，很適合觀察與拍攝地熱煙霧。');
+  }
+  if (!thunder && level <= 1 && uv >= 6) {
+    plan.push('紫外線偏強，正午前後建議在有遮蔽處休息，避免長時間曝曬。');
+  }
+  if (windLevel >= 5 && windLevel < 7) {
+    plan.push('風力稍大，煮食時留意竹簍穩定，帽子與輕物容易被吹動。');
+  }
+  if (fog && !thunder) {
+    plan.push('能見度不佳，遠景拍攝效果有限，建議改拍近距離的蒸氣與煮食特寫。');
+  }
+  if (!thunder && level <= 1 && pop < 60) {
+    plan.push('假日人潮多，上午抵達通常更容易找到停車位與煮食位置。');
+  }
+
+  // 隨身物品（動態渲染，用不到就不出現）
+  if (level >= 3) items.push('雨衣（風大時不建議長柄傘）');
+  else if (level === 2) items.push('折疊傘或輕便雨衣');
+  else if (level === 1 || pop >= 60) items.push('折疊傘');
+
+  if (uv >= 6) {
+    items.push('防曬乳');
+    items.push('太陽眼鏡');
+    items.push('遮陽帽');
+  } else if (uv >= 3) {
+    items.push('防曬乳');
+  }
+
+  if (todayMax >= 32) {
+    items.push('充足的飲用水');
+    items.push('防暑用品（涼感毛巾／電解質）');
+  }
+  if (diff > 8) items.push('薄外套');
+  if (todayMin <= 10) items.push('厚外套與圍巾');
+  if (level >= 1) items.push('防滑鞋');
+  items.push('小毛巾（泡腳與擦手用）');
+
+  const uniq = (list: string[]) => [...new Set(list)];
+  return { risks, dress: uniq(dress), plan: uniq(plan), items: uniq(items) };
+})();
+
+const hasData = Boolean(data && daily?.time?.length);
+const days =
+  daily?.time?.map((date: number | string, i: number) => {
+    const d = new Date(`${date}T00:00:00+08:00`);
+    const info = describe(Number(daily.weather_code[i]));
+    return {
+      label: i === 0 ? '今天' : `週${weekday[d.getDay()]}`,
+      date: `${d.getMonth() + 1}/${d.getDate()}`,
+      emoji: info.emoji,
+      labelText: info.label,
+      max: Math.round(Number(daily.temperature_2m_max[i])),
+      min: Math.round(Number(daily.temperature_2m_min[i])),
+      pop: Math.round(Number(daily.precipitation_probability_max[i] ?? 0)),
+    };
+  }) ?? [];
+
+const updatedAt = new Date(fetchedAt).toLocaleTimeString('zh-TW', {
+  timeZone: 'Asia/Taipei',
+  hour: '2-digit',
+  minute: '2-digit',
+});
+---
+
+<section class="section weather-section" id="weather" aria-labelledby="weather-title">
+  <div class="shell">
+    <div class="section-heading split-heading">
+      <div>
+        <p class="eyebrow">LOCAL FORECAST</p>
+        <h2 id="weather-title">即時天氣<br />與未來一週</h2>
+      </div>
+      <p>不只看溫度：直接告訴你今天該怎麼穿、適不適合出發、背包裡要帶什麼。</p>
+    </div>
+
+    {
+      hasData ? (
+        <>
+          <div class="weather-grid">
+            <article class="weather-current">
+              <span class="weather-emoji" aria-hidden="true">{currentInfo.emoji}</span>
+              <div class="weather-now">
+                <strong>{current ? Math.round(Number(current.temperature_2m)) : todayMax}°</strong>
+                <span>{currentInfo.label}</span>
+              </div>
+              <p class="weather-summary">
+                現在 {currentInfo.label}　{todayMin}–{todayMax}°C　{uvText}　{windText}
+              </p>
+              <ul class="weather-meta">
+                <li><span>體感溫度</span><strong>{current ? Math.round(Number(current.apparent_temperature)) : '—'}°</strong></li>
+                <li><span>降雨機率</span><strong>{pop}%</strong></li>
+                <li><span>濕度</span><strong>{current ? Math.round(Number(current.relative_humidity_2m)) : '—'}%</strong></li>
+                <li><span>風速</span><strong>{windMax.toFixed(1)} m/s</strong></li>
+              </ul>
+            </article>
+
+            <div class="weather-forecast" aria-label="未來一週預報">
+              {days.map((day) => (
+                <article class="forecast-card">
+                  <p class="forecast-day">{day.label}</p>
+                  <p class="forecast-date">{day.date}</p>
+                  <span class="forecast-emoji" aria-hidden="true">{day.emoji}</span>
+                  <p class="forecast-label">{day.labelText}</p>
+                  <p class="forecast-temp"><strong>{day.max}°</strong><span>{day.min}°</span></p>
+                  <p class="forecast-pop">降雨 {day.pop}%</p>
+                </article>
+              ))}
+            </div>
+          </div>
+
+          <div class="weather-alerts" aria-live="polite">
+            {advice.risks.length > 0 ? (
+              advice.risks.map((risk) => (
+                <div class="weather-alert">
+                  <span class="weather-alert-icon" aria-hidden="true">!</span>
+                  <div>
+                    <strong>風險提醒：{risk.title}</strong>
+                    <p>{risk.text}</p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div class="weather-alert is-safe">
+                <span class="weather-alert-icon" aria-hidden="true">✓</span>
+                <div>
+                  <strong>目前無特殊風險提醒</strong>
+                  <p>沒有雷雨、豪雨、強風或濃霧警訊，可依一般規劃前往。</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div class="advice-grid">
+            {advice.dress.length > 0 && (
+              <article class="advice-card">
+                <div class="advice-head">
+                  <span aria-hidden="true">👕</span>
+                  <h3>出行穿搭</h3>
+                </div>
+                <ul class="advice-list">
+                  {advice.dress.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            )}
+
+            {advice.plan.length > 0 && (
+              <article class="advice-card">
+                <div class="advice-head">
+                  <span aria-hidden="true">🗺️</span>
+                  <h3>遊玩安排</h3>
+                </div>
+                <ul class="advice-list">
+                  {advice.plan.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            )}
+
+            {advice.items.length > 0 && (
+              <article class="advice-card">
+                <div class="advice-head">
+                  <span aria-hidden="true">🎒</span>
+                  <h3>隨身物品</h3>
+                </div>
+                <ul class="advice-chips">
+                  {advice.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </article>
+            )}
+          </div>
+
+          <p class="weather-source">
+            預報資料依據臺灣本地的氣象觀測與數值預報整理，更新時間 {updatedAt}（每 30 分鐘重新整理）；僅供出發參考，實際天氣與災害警特報請以中央氣象署及園區當日公告為準。
+          </p>
+        </>
+      ) : (
+        <p class="weather-fallback">天氣資料暫時無法載入，請稍後再試；出發前也可查詢中央氣象署的最新預報。</p>
+      )
+    }
+  </div>
+</section>

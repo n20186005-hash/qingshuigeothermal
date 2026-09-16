@@ -3,15 +3,26 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import Icon from '@/components/Icon.astro';
+import Weather from '@/components/Weather.astro';
 import {
   site,
+  rating,
   quickFacts,
   cookingSteps,
   foods,
   experiences,
   gallery,
   routes,
+  routesHalfDay,
   faqs,
+  about,
+  science,
+  services,
+  seasons,
+  groupRoutes,
+  onsen,
+  rental,
+  bus,
 } from '@/data/site';
 
 const mapUrl = `https://www.google.com/maps/dir/?api=1&destination=${site.coordinates.lat},${site.coordinates.lng}`;
@@ -19,16 +30,26 @@ const jsonLd = [
   {
     '@context': 'https://schema.org',
     '@type': 'TouristAttraction',
+    '@id': `${site.url}/#attraction`,
     name: '清水地熱公園',
-    alternateName: 'Qingshui Geothermal Park',
+    alternateName: ['Qingshui Geothermal Park', '清水地熱', '清水地热公园'],
     description: site.description,
     url: site.url,
-    image: gallery.map((image) => new URL(image.src, site.url).toString()),
+    image: [
+      new URL('/og-image.jpg', site.url).toString(),
+      ...gallery.map((image) => new URL(image.src, site.url).toString()),
+    ],
     telephone: site.phone,
     isAccessibleForFree: true,
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: rating.score,
+      reviewCount: rating.count,
+      bestRating: 5,
+    },
     address: {
       '@type': 'PostalAddress',
-      streetAddress: '三星路八段501巷139號',
+      streetAddress: site.address,
       addressLocality: '大同鄉',
       addressRegion: '宜蘭縣',
       postalCode: '267',
@@ -39,6 +60,8 @@ const jsonLd = [
       latitude: site.coordinates.lat,
       longitude: site.coordinates.lng,
     },
+    hasMap: site.mapsUrl,
+    sameAs: [site.mapsUrl],
     openingHoursSpecification: [
       {
         '@type': 'OpeningHoursSpecification',
@@ -135,6 +158,29 @@ const jsonLd = [
       </div>
     </section>
 
+    <Weather />
+
+    <section class="section about-section" aria-labelledby="about-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">ABOUT THE PARK</p>
+            <h2 id="about-title">關於清水地熱</h2>
+          </div>
+          <p>{about.lead}</p>
+        </div>
+        <div class="about-grid">
+          {about.blocks.map((block) => (
+            <article class="about-card">
+              <span class="about-icon"><Icon name={block.icon} class="size-6" /></span>
+              <h3>{block.title}</h3>
+              <p>{block.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <section class="section cooking-section" id="cooking" aria-labelledby="cooking-title">
       <div class="shell">
         <div class="section-heading centered-heading">
@@ -219,6 +265,22 @@ const jsonLd = [
             </article>
           ))}
         </div>
+        <div class="rental-wrap">
+          <div class="rental-head">
+            <p class="eyebrow">ON-SITE RENTAL</p>
+            <h3>竹簍租借與食材</h3>
+            <p>{rental.lead}</p>
+          </div>
+          <div class="service-grid">
+            {rental.notes.map((note) => (
+              <article class="service-card">
+                <span class="service-icon"><Icon name={note.icon} class="size-6" /></span>
+                <h3>{note.title}</h3>
+                <p class="service-summary">{note.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
         <p class="fine-print">※ 池溫、食材大小與竹簍內數量都會影響時間；肉類、蛋類與根莖類食用前務必確認完全熟透。</p>
       </div>
     </section>
@@ -247,6 +309,27 @@ const jsonLd = [
       </div>
     </section>
 
+    <section class="section onsen-section" aria-labelledby="onsen-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">HOT SPRING &AMP; SAUNA</p>
+            <h2 id="onsen-title">泡湯與湯屋<br />怎麼安排</h2>
+          </div>
+          <p>{onsen.lead}</p>
+        </div>
+        <div class="onsen-grid">
+          {onsen.notes.map((note) => (
+            <article class="service-card">
+              <span class="service-icon"><Icon name={note.icon} class="size-6" /></span>
+              <h3>{note.title}</h3>
+              <p class="service-summary">{note.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <section class="safety-section" aria-labelledby="safety-title">
       <div class="shell safety-shell">
         <div class="safety-icon"><Icon name="shield" class="size-10" /></div>
@@ -261,6 +344,34 @@ const jsonLd = [
           <li>食材完全熟透</li>
           <li>豪雨颱風不前往</li>
         </ul>
+      </div>
+    </section>
+
+    <section class="section science-section" aria-labelledby="science-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">GEOTHERMAL & RESPONSIBILITY</p>
+            <h2 id="science-title">地熱科普<br />與訪客責任</h2>
+          </div>
+          <p>{science.lead}</p>
+        </div>
+        <div class="science-grid">
+          {science.points.map((point) => (
+            <article class="science-card">
+              <span class="science-icon"><Icon name={point.icon} class="size-6" /></span>
+              <h3>{point.title}</h3>
+              <p>{point.text}</p>
+            </article>
+          ))}
+        </div>
+        <div class="responsibility">
+          <p class="eyebrow">VISITOR RESPONSIBILITY</p>
+          <h3>與地熱共處的幾件小事</h3>
+          <ul>
+            {science.responsibilities.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -291,8 +402,21 @@ const jsonLd = [
           </article>
           <article>
             <span><Icon name="phone" class="size-6" /></span>
-            <div><p>園區電話</p><strong><a href={`tel:${site.phone.replaceAll('-', '')}`}>{site.phone}</a></strong><small>專程泡湯或遇特殊天候，建議先確認。</small></div>
+            <div>            <p>園區電話</p><strong><a href={`tel:${site.phone.replaceAll('-', '')}`}>{site.phone}</a></strong><small>專程泡湯或遇特殊天候，建議先確認。</small></div>
           </article>
+        </div>
+        <div class="bus-panel">
+          <div class="bus-head">
+            <p class="eyebrow">BY BUS · 綠 17</p>
+            <h3>沒開車怎麼去：綠 17 公車</h3>
+            <p>{bus.lead}</p>
+          </div>
+          <ol class="bus-list">
+            {bus.points.map((point) => (
+              <li>{point}</li>
+            ))}
+          </ol>
+          <a class="button button-outline" href={bus.officialUrl} target="_blank" rel="noopener noreferrer">查詢官方班次與預約 <Icon name="external" class="size-4" /></a>
         </div>
         <div class="transport-map">
           <div class="transport-map-heading">
@@ -312,6 +436,28 @@ const jsonLd = [
             referrerpolicy="strict-origin-when-cross-origin"
             title="清水地熱公園 Google 地圖"
           ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services-section" aria-labelledby="services-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">FACILITIES NEARBY</p>
+            <h2 id="services-title">訪客服務<br />與周邊設施</h2>
+          </div>
+          <p>以下僅依設施「類型」做中立說明，不推薦特定店家；實際營業時段與存量請以現場或地圖為準。</p>
+        </div>
+        <div class="service-grid">
+          {services.map((svc) => (
+            <article class="service-card">
+              <span class="service-icon"><Icon name={svc.icon} class="size-6" /></span>
+              <h3>{svc.title}</h3>
+              <p class="service-summary">{svc.summary}</p>
+              <p class="service-note">{svc.note}</p>
+            </article>
+          ))}
         </div>
       </div>
     </section>
@@ -342,23 +488,127 @@ const jsonLd = [
       </dialog>
     </section>
 
+    <section class="section reviews-section" id="reviews" aria-labelledby="reviews-title">
+      <div class="shell reviews-shell">
+        <div class="section-heading">
+          <p class="eyebrow">VISITOR RATINGS</p>
+          <h2 id="reviews-title">評價與評分</h2>
+        </div>
+        <div class="reviews-card">
+          <div class="reviews-score">
+            <strong>{rating.score.toFixed(1)}</strong>
+            <div class="reviews-stars" aria-hidden="true">{'★'.repeat(Math.round(rating.score))}{'☆'.repeat(5 - Math.round(rating.score))}</div>
+            <p class="reviews-count">{rating.count.toLocaleString('zh-Hant-TW')} 則 {rating.source} 評價</p>
+          </div>
+          <div class="reviews-body">
+            <p>{rating.summary}</p>
+            <p class="reviews-source">同步自 Google 地圖使用者評價，同步時間 {rating.syncMonth}；版權歸原作者與 Google 地圖所有。</p>
+            <a class="button button-dark" href={rating.mapsUrl} target="_blank" rel="noopener noreferrer">在 Google 地圖查看全部評價 <Icon name="external" class="size-4" /></a>
+          </div>
+        </div>
+        <p class="reviews-sync">評分與評價數同步自 Google 地圖（Google Maps）使用者評價 · {rating.syncMonth} · <a href={rating.mapsUrl} target="_blank" rel="noopener noreferrer">點擊查看 Google 地圖全部評價↗</a></p>
+      </div>
+    </section>
+
     <section class="section route-section" aria-labelledby="route-title">
       <div class="shell route-shell">
         <div class="route-intro">
-          <p class="eyebrow light">ONE DAY IN SANXING</p>
-          <h2 id="route-title">從一顆溫泉蛋，<br />排成宜蘭山線一日</h2>
-          <p>這條路線減少折返，適合第一次到三星、大同一帶的親子或朋友同行。</p>
+          <p class="eyebrow light">PLAN YOUR DAY</p>
+          <h2 id="route-title">從一顆溫泉蛋，<br />排成宜蘭山線</h2>
+          <p>依時間與體力，選半天或一整天。兩條路線都減少折返，適合第一次到三星、大同一帶的親子或朋友同行。</p>
         </div>
-        <ol class="route-timeline">
-          {routes.map((route, index) => (
-            <li>
-              <time>{route.time}</time>
-              <span class="route-dot" aria-hidden="true"></span>
-              <div><strong>{route.title}</strong><p>{route.meta}</p></div>
-              {index < routes.length - 1 && <span class="route-line" aria-hidden="true"></span>}
-            </li>
+        <div class="route-plans">
+          <div class="route-plan">
+            <h3 class="route-plan-title">半日路線</h3>
+            <ol class="route-timeline">
+              {routesHalfDay.map((route, index) => (
+                <li>
+                  <time>{route.time}</time>
+                  <span class="route-dot" aria-hidden="true"></span>
+                  <div><strong>{route.title}</strong><p>{route.meta}</p></div>
+                  {index < routesHalfDay.length - 1 && <span class="route-line" aria-hidden="true"></span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div class="route-plan">
+            <h3 class="route-plan-title">全日路線</h3>
+            <ol class="route-timeline">
+              {routes.map((route, index) => (
+                <li>
+                  <time>{route.time}</time>
+                  <span class="route-dot" aria-hidden="true"></span>
+                  <div><strong>{route.title}</strong><p>{route.meta}</p></div>
+                  {index < routes.length - 1 && <span class="route-line" aria-hidden="true"></span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section season-section" id="season" aria-labelledby="season-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">SEASONAL STRATEGY</p>
+            <h2 id="season-title">四季遊覽<br />策略表</h2>
+          </div>
+          <p>依據臺灣中央氣象署近 30 年氣候平均值（氣候態）與常年觀測整理，幫你判斷什麼時候去最舒服。</p>
+        </div>
+        <div class="strategy-wrap">
+          <table class="strategy-table">
+            <thead>
+              <tr>
+                <th scope="col">季節</th>
+                <th scope="col">氣候與天氣</th>
+                <th scope="col">地熱與水質</th>
+                <th scope="col">自然與動植物</th>
+                <th scope="col">前往建議</th>
+              </tr>
+            </thead>
+            <tbody>
+              {seasons.map((s) => (
+                <tr>
+                  <th scope="row">{s.season}<small>{s.months}</small></th>
+                  <td>{s.weather}</td>
+                  <td>{s.geothermal}</td>
+                  <td>{s.nature}</td>
+                  <td>{s.advice}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section group-section" aria-labelledby="group-title">
+      <div class="shell">
+        <div class="section-heading centered-heading">
+          <p class="eyebrow">ROUTES BY TRAVELER</p>
+          <h2 id="group-title">按出行組合<br />挑一條路線</h2>
+          <p>親子、攝影或希望省力，節奏與停留點都不一樣。依你的同行者選最合拍的一條。</p>
+        </div>
+        <div class="group-grid">
+          {groupRoutes.map((g) => (
+            <article class="group-card">
+              <div class="group-head">
+                <span class="group-icon"><Icon name={g.icon} class="size-6" /></span>
+                <div>
+                  <h3>{g.type}</h3>
+                  <small>{g.pace}</small>
+                </div>
+              </div>
+              <p>{g.summary}</p>
+              <ol class="group-steps">
+                {g.steps.map((step) => <li>{step}</li>)}
+              </ol>
+              <p class="group-tip"><Icon name="info" class="size-4" />{g.tip}</p>
+            </article>
           ))}
-        </ol>
+        </div>
       </div>
     </section>
 
@@ -376,6 +626,36 @@ const jsonLd = [
               <div><p>{faq.answer}</p></div>
             </details>
           ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section sources-section" aria-labelledby="sources-title">
+      <div class="shell">
+        <div class="section-heading">
+          <p class="eyebrow">SOURCES</p>
+          <h2 id="sources-title">資料來源</h2>
+        </div>
+        <div class="sources-card">
+          <div class="source-item">
+            <h3>評價</h3>
+            <p class="source-meta">評分與評價數 · 同步時間 {rating.syncMonth}</p>
+            <p class="source-note">同步自 Google 地圖使用者評價，同步時間 {rating.syncMonth}；版權歸原作者與 Google 地圖所有。</p>
+            <a href={rating.mapsUrl} target="_blank" rel="noopener noreferrer">在 Google 地圖查看全部評價↗</a>
+          </div>
+          <div class="source-item">
+            <h3>氣候與季節</h3>
+            <p class="source-note">季節策略依據臺灣中央氣象署近 30 年氣候平均值（氣候態）與常年觀測整理，僅供規劃參考。</p>
+          </div>
+          <div class="source-item">
+            <h3>開放資訊</h3>
+            <p class="source-note">開園時間、收費與設施以園區與宜蘭縣政府當日公告為準；本站為獨立旅遊資訊整理，非官方網站，最後核對日期 {site.lastVerified}。</p>
+            <ul class="source-links">
+              <li><a href="https://www.e-land.gov.tw/" target="_blank" rel="noopener noreferrer">宜蘭縣政府</a></li>
+              <li><a href="https://www.taiwan.net.tw/" target="_blank" rel="noopener noreferrer">交通部觀光署</a></li>
+              <li><a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener noreferrer">中央氣象署</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>

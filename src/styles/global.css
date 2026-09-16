@@ -383,3 +383,170 @@ details[open] .faq-plus::after { transform: translate(-50%, -50%) rotate(0); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* ── 即時天氣 ───────────────────────────────────────────── */
+.weather-section { background: var(--white); }
+.weather-grid { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 28px; align-items: stretch; }
+.weather-current { background: var(--forest-900); color: #fff; border-radius: 22px; padding: 30px 28px; display: flex; flex-direction: column; gap: 14px; }
+.weather-emoji { font-size: 3.2rem; line-height: 1; }
+.weather-now { display: flex; align-items: baseline; gap: 14px; }
+.weather-now strong { font-size: 4rem; font-weight: 800; line-height: .9; }
+.weather-now span { color: rgba(255,255,255,.8); font-size: 1.05rem; }
+.weather-meta { list-style: none; margin: 8px 0 0; padding: 18px 0 0; border-top: 1px solid rgba(255,255,255,.16); display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; }
+.weather-meta li { display: flex; flex-direction: column; }
+.weather-meta span { color: rgba(255,255,255,.6); font-size: .74rem; letter-spacing: .04em; }
+.weather-meta strong { font-size: 1.25rem; font-weight: 700; }
+.weather-tip { margin: 4px 0 0; font-size: .9rem; color: var(--amber-light); }
+.weather-forecast { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(112px, 1fr); gap: 14px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x proximity; }
+.forecast-card { background: var(--cream); border: 1px solid var(--line); border-radius: 18px; padding: 18px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; scroll-snap-align: start; }
+.forecast-day { font-weight: 800; margin: 0; }
+.forecast-date { margin: 0; font-size: .74rem; color: var(--muted); }
+.forecast-emoji { font-size: 2rem; }
+.forecast-label { margin: 0; font-size: .8rem; color: var(--muted); }
+.forecast-temp { margin: 0; display: flex; gap: 8px; align-items: baseline; }
+.forecast-temp strong { font-size: 1.2rem; }
+.forecast-temp span { color: var(--muted); }
+.forecast-pop { margin: 0; font-size: .72rem; color: var(--forest-700); }
+.weather-source { margin-top: 22px; font-size: .8rem; color: var(--muted); max-width: 760px; }
+.weather-fallback { background: var(--cream); border: 1px dashed var(--line); border-radius: 16px; padding: 24px; color: var(--muted); }
+
+/* 天氣｜智慧建議 */
+.weather-summary { margin: 2px 0 0; font-size: .92rem; color: rgba(255,255,255,.82); }
+.weather-alerts { margin-top: 26px; display: flex; flex-direction: column; gap: 12px; }
+.weather-alert { display: flex; align-items: flex-start; gap: 14px; border-radius: 16px; padding: 16px 20px; background: #fff4f2; border: 1px solid #ffc9c0; }
+.weather-alert.is-safe { background: #f0f7f1; border-color: #cfe6d2; }
+.weather-alert-icon { flex: none; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #e5484d; color: #fff; font-weight: 800; font-size: .92rem; }
+.weather-alert.is-safe .weather-alert-icon { background: #2f9e44; }
+.weather-alert strong { display: block; margin-bottom: 3px; font-size: .98rem; color: #8a201d; }
+.weather-alert.is-safe strong { color: #256b32; }
+.weather-alert p { margin: 0; font-size: .88rem; color: #7a3a36; }
+.weather-alert.is-safe p { color: #3f6b47; }
+
+.advice-grid { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.advice-card { background: var(--cream); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+.advice-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.advice-head span { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--white); border: 1px solid var(--line); color: var(--forest-700); display: flex; align-items: center; justify-content: center; font-size: 1.05rem; }
+.advice-head h3 { margin: 0; font-size: 1.02rem; }
+.advice-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+.advice-list li { position: relative; padding-left: 22px; font-size: .92rem; color: var(--ink); }
+.advice-list li::before { content: ""; position: absolute; left: 4px; top: 8px; width: 7px; height: 7px; border-radius: 50%; background: var(--forest-700); }
+.advice-chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.advice-chips li { background: var(--white); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: .86rem; color: var(--ink); }
+
+/* ── 關於清水地熱 ──────────────────────────────────────── */
+.about-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+.about-card { background: var(--white); border: 1px solid var(--line); border-radius: 20px; padding: 28px 26px; }
+.about-icon { display: inline-flex; width: 46px; height: 46px; border-radius: 12px; background: var(--steam); color: var(--forest-700); align-items: center; justify-content: center; margin-bottom: 14px; }
+.about-card h3 { margin: 0 0 8px; font-size: 1.18rem; }
+.about-card p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+/* ── 地熱科普與訪客責任 ────────────────────────────────── */
+.science-section { background: var(--forest-950); color: #fff; }
+.science-section .eyebrow { color: var(--amber-light); }
+.science-section .split-heading > p:last-child { color: rgba(255,255,255,.72); }
+.science-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 30px; }
+.science-card { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); border-radius: 20px; padding: 26px 24px; }
+.science-icon { display: inline-flex; width: 46px; height: 46px; border-radius: 12px; background: rgba(255,255,255,.12); color: var(--amber-light); align-items: center; justify-content: center; margin-bottom: 14px; }
+.science-card h3 { margin: 0 0 8px; font-size: 1.15rem; }
+.science-card p { margin: 0; color: rgba(255,255,255,.72); font-size: .92rem; }
+.responsibility { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); border-radius: 20px; padding: 28px 30px; }
+.responsibility h3 { margin: 8px 0 16px; font-size: 1.3rem; }
+.responsibility ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 28px; }
+.responsibility li { position: relative; padding-left: 26px; color: rgba(255,255,255,.82); font-size: .95rem; }
+.responsibility li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--amber-light); font-weight: 800; }
+
+/* ── 訪客服務與周邊設施 ────────────────────────────────── */
+.services-section { background: var(--white); }
+.service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.service-card { background: var(--steam); border: 1px solid var(--line); border-radius: 20px; padding: 26px 24px; }
+.service-icon { display: inline-flex; width: 46px; height: 46px; border-radius: 12px; background: var(--white); color: var(--forest-700); align-items: center; justify-content: center; margin-bottom: 14px; border: 1px solid var(--line); }
+.service-card h3 { margin: 0 0 10px; font-size: 1.15rem; }
+.service-summary { margin: 0 0 10px; color: var(--ink); font-size: .94rem; }
+.service-note { margin: 0; color: var(--muted); font-size: .84rem; }
+
+/* ── 泡湯與湯屋專題 ── */
+.onsen-section { background: var(--white); }
+.onsen-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+
+/* ── 竹簍租借與食材（食材區內面板） ── */
+.rental-wrap { margin-top: 30px; border-top: 1px solid var(--line); padding-top: 26px; }
+.rental-head { margin-bottom: 18px; }
+.rental-head h3 { margin: 6px 0 8px; font-size: 1.35rem; }
+
+/* ── 綠 17 公車面板 ── */
+.bus-panel { margin-top: 30px; background: var(--cream); border: 1px solid var(--line); border-radius: 20px; padding: 28px 28px; }
+.bus-head { margin-bottom: 16px; }
+.bus-head h3 { margin: 6px 0 8px; font-size: 1.35rem; }
+.bus-list { list-style: none; margin: 0 0 20px; padding: 0; counter-reset: bus; display: flex; flex-direction: column; gap: 12px; }
+.bus-list li { position: relative; padding-left: 34px; font-size: .94rem; color: var(--ink); counter-increment: bus; }
+.bus-list li::before { content: counter(bus); position: absolute; left: 0; top: 1px; width: 22px; height: 22px; border-radius: 50%; background: var(--forest-800); color: #fff; font-size: .74rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+
+/* ── 評價與評分 ────────────────────────────────────────── */
+.reviews-section { background: var(--steam); }
+.reviews-card { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 30px; align-items: stretch; background: var(--white); border: 1px solid var(--line); border-radius: 22px; padding: 34px 32px; }
+.reviews-score { background: var(--forest-900); color: #fff; border-radius: 18px; padding: 30px 26px; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+.reviews-score strong { font-size: 3.6rem; font-weight: 800; line-height: 1; }
+.reviews-stars { color: var(--amber-light); font-size: 1.4rem; letter-spacing: .12em; }
+.reviews-count { margin: 0; color: rgba(255,255,255,.7); font-size: .88rem; }
+.reviews-body { display: flex; flex-direction: column; gap: 14px; justify-content: center; }
+.reviews-body > p:first-child { margin: 0; font-size: 1.02rem; }
+.reviews-source { margin: 0; font-size: .82rem; color: var(--muted); }
+.reviews-sync { margin-top: 20px; font-size: .82rem; color: var(--muted); }
+.reviews-sync a { color: var(--forest-700); text-decoration: underline; }
+
+/* ── 路線（半日／全日） ────────────────────────────────── */
+.route-plans { display: flex; flex-direction: column; gap: 34px; }
+.route-plan-title { margin: 0 0 18px; font-size: 1.25rem; color: var(--amber-light); }
+
+/* ── 四季策略表 ────────────────────────────────────────── */
+.season-section { background: var(--white); }
+.strategy-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 20px; }
+.strategy-table { width: 100%; border-collapse: collapse; min-width: 760px; }
+.strategy-table th, .strategy-table td { padding: 18px 20px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); font-size: .92rem; }
+.strategy-table thead th { background: var(--forest-900); color: #fff; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
+.strategy-table tbody th { color: var(--forest-800); font-weight: 800; white-space: nowrap; }
+.strategy-table tbody th small { display: block; font-weight: 500; color: var(--muted); margin-top: 2px; }
+.strategy-table tbody tr:last-child td, .strategy-table tbody tr:last-child th { border-bottom: none; }
+.strategy-table td { color: var(--muted); }
+
+/* ── 按人群路線 ────────────────────────────────────────── */
+.group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.group-card { background: var(--white); border: 1px solid var(--line); border-radius: 20px; padding: 28px 26px; display: flex; flex-direction: column; gap: 14px; }
+.group-head { display: flex; align-items: center; gap: 14px; }
+.group-icon { display: inline-flex; width: 46px; height: 46px; border-radius: 12px; background: var(--steam); color: var(--forest-700); align-items: center; justify-content: center; flex: none; }
+.group-head h3 { margin: 0; font-size: 1.18rem; }
+.group-head small { color: var(--amber); font-weight: 700; font-size: .78rem; letter-spacing: .04em; }
+.group-card > p { margin: 0; color: var(--muted); font-size: .92rem; }
+.group-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; counter-reset: step; }
+.group-steps li { position: relative; padding-left: 34px; font-size: .92rem; color: var(--ink); counter-increment: step; }
+.group-steps li::before { content: counter(step); position: absolute; left: 0; top: 1px; width: 22px; height: 22px; border-radius: 50%; background: var(--forest-800); color: #fff; font-size: .74rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.group-tip { margin: 0; display: flex; align-items: flex-start; gap: 8px; font-size: .84rem; color: var(--forest-700); background: var(--cream); border-radius: 12px; padding: 12px 14px; }
+.group-tip svg { flex: none; margin-top: 2px; }
+
+/* ── 資料來源 ──────────────────────────────────────────── */
+.sources-section { background: var(--white); }
+.sources-card { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.source-item { background: var(--steam); border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px; }
+.source-item h3 { margin: 0 0 10px; font-size: 1.12rem; color: var(--forest-800); }
+.source-meta { margin: 0 0 10px; font-size: .8rem; color: var(--amber); font-weight: 700; }
+.source-note { margin: 0 0 14px; font-size: .88rem; color: var(--muted); }
+.source-item a { color: var(--forest-700); font-weight: 700; font-size: .9rem; text-decoration: underline; }
+.source-links { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 14px; }
+.source-links a { color: var(--forest-700); font-size: .88rem; font-weight: 700; text-decoration: none; border-bottom: 1px solid transparent; }
+.source-links a:hover { border-bottom-color: var(--forest-700); }
+
+/* ── 響應式補強 ────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .weather-grid { grid-template-columns: 1fr; }
+  .about-grid { grid-template-columns: 1fr; }
+  .science-grid, .service-grid, .group-grid, .sources-card, .advice-grid, .onsen-grid { grid-template-columns: 1fr; }
+  .reviews-card { grid-template-columns: 1fr; }
+  .responsibility ul { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  .weather-meta { grid-template-columns: 1fr 1fr; }
+  .reviews-score strong { font-size: 3rem; }
+  .route-line { left: 88px; }
+  .strategy-table th, .strategy-table td { padding: 14px 14px; }
+}
