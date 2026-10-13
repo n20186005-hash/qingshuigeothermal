@@ -1,0 +1,29 @@
+---
+import Icon from './Icon.astro';
+import { topicLinks } from '@/data/site';
+
+interface Props {
+  current?: string;
+}
+const { current } = Astro.props;
+const others = topicLinks.filter((t) => !current || t.slug !== current);
+---
+
+<section class="section topic-links-section" aria-labelledby="topic-links-title">
+  <div class="shell">
+    <div class="section-heading centered-heading">
+      <p class="eyebrow">EXPLORE MORE</p>
+      <h2 id="topic-links-title">延伸專題</h2>
+      <p>把開放時間、煮食、交通與行程拆成單篇，出發前快速查閱。</p>
+    </div>
+    <div class="topic-grid">
+      {others.map((t) => (
+        <a class="topic-card" href={`/${t.slug}`}>
+          <h3>{t.label}</h3>
+          <p>{t.desc}</p>
+          <span class="topic-go">閱讀專題 <Icon name="arrow" class="size-4" /></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

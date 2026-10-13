@@ -1,0 +1,162 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
+import Icon from '@/components/Icon.astro';
+import { site, routes, routesHalfDay, groupRoutes } from '@/data/site';
+
+const pageUrl = `${site.url}/itinerary`;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: '一日遊路線', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '清水地熱一天怎麼排？',
+        acceptedAnswer: { '@type': 'Answer', text: '建議 09:00 入園煮食、泡腳約 2.5 小時，中午轉往三星市區吃三星蔥料理、下午到天送埤老車站散步，傍晚返回羅東接夜市；半日則只保留園區與三星午餐。' },
+      },
+      {
+        '@type': 'Question',
+        name: '半日夠嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '夠。若時間有限，09:00 入園煮食與足湯約 2 小時，11:00 轉往三星市區午餐採買，13:00 即可返程，仍能完整體驗地熱煮食。' },
+      },
+      {
+        '@type': 'Question',
+        name: '適合帶幼兒或長輩嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '整體適合親子與長輩，但高溫煮食區必須由成人操作。建議平日上午抵達、避開人潮，並留意濕滑地面、曝曬與泡腳時間。' },
+      },
+      {
+        '@type': 'Question',
+        name: '附近還有什麼可以順遊？',
+        acceptedAnswer: { '@type': 'Answer', text: '園區周邊可順遊長埤湖、三星市區（三星蔥）、天送埤車站與羅東夜市，串成宜蘭山線的一日行程。' },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="清水地熱一日遊路線｜半日／全日行程與周邊順遊"
+  description="清水地熱一日遊怎麼排：09:00 入園煮食泡腳，串聯長埤湖、三星市區、天送埤車站與羅東夜市。提供半日與全日路線、親子與攝影建議。"
+  jsonLd={jsonLd}
+>
+  <Header />
+  <main id="main-content">
+    <section class="hero" aria-labelledby="page-title">
+      <img class="hero-image" src="/images/geothermal-basket.webp" alt="遊客在清水地熱公園以竹簍體驗地熱煮食" width="1600" height="1067" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="shell hero-content">
+        <p class="eyebrow light">PLAN YOUR DAY</p>
+        <h1 id="page-title">一日遊路線</h1>
+        <p class="hero-lead">從一顆溫泉蛋，排成宜蘭山線。半天或一整天，都幫你算好。</p>
+      </div>
+    </section>
+
+    <section class="section route-section" aria-labelledby="route-title">
+      <div class="shell route-shell">
+        <div class="route-intro">
+          <p class="eyebrow light">ROUTE OPTIONS</p>
+          <h2 id="route-title">半日或<br />一整天</h2>
+          <p>兩條路線都減少折返，適合第一次到三星、大同一帶的親子或朋友同行。園區 09:00 開園，建議以開園時間規劃。</p>
+        </div>
+        <div class="route-plans">
+          <div class="route-plan">
+            <h3 class="route-plan-title">半日路線</h3>
+            <ol class="route-timeline">
+              {routesHalfDay.map((route, index) => (
+                <li>
+                  <time>{route.time}</time>
+                  <span class="route-dot" aria-hidden="true"></span>
+                  <div><strong>{route.title}</strong><p>{route.meta}</p></div>
+                  {index < routesHalfDay.length - 1 && <span class="route-line" aria-hidden="true"></span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div class="route-plan">
+            <h3 class="route-plan-title">全日路線</h3>
+            <ol class="route-timeline">
+              {routes.map((route, index) => (
+                <li>
+                  <time>{route.time}</time>
+                  <span class="route-dot" aria-hidden="true"></span>
+                  <div><strong>{route.title}</strong><p>{route.meta}</p></div>
+                  {index < routes.length - 1 && <span class="route-line" aria-hidden="true"></span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section group-section" aria-labelledby="group-title">
+      <div class="shell">
+        <div class="section-heading centered-heading">
+          <p class="eyebrow">ROUTES BY TRAVELER</p>
+          <h2 id="group-title">按出行組合<br />挑一條路線</h2>
+          <p>親子、攝影或希望省力，節奏與停留點都不一樣。依你的同行者選最合拍的一條。</p>
+        </div>
+        <div class="group-grid">
+          {groupRoutes.map((g) => (
+            <article class="group-card">
+              <div class="group-head">
+                <span class="group-icon"><Icon name={g.icon} class="size-6" /></span>
+                <div>
+                  <h3>{g.type}</h3>
+                  <small>{g.pace}</small>
+                </div>
+              </div>
+              <p>{g.summary}</p>
+              <ol class="group-steps">
+                {g.steps.map((step) => <li>{step}</li>)}
+              </ol>
+              <p class="group-tip"><Icon name="info" class="size-4" />{g.tip}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq-section" aria-labelledby="faq-title">
+      <div class="shell faq-shell">
+        <div class="faq-heading">
+          <p class="eyebrow">QUESTIONS</p>
+          <h2 id="faq-title">行程常見問題</h2>
+          <p>時間為規劃參考，實際請依當日開放與交通狀況調整。</p>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary><span>01</span>清水地熱一天怎麼排？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>建議 09:00 入園煮食、泡腳約 2.5 小時，中午轉往三星市區吃三星蔥料理、下午到天送埤老車站散步，傍晚返回羅東接夜市；半日則只保留園區與三星午餐。</p></div>
+          </details>
+          <details>
+            <summary><span>02</span>半日夠嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>夠。若時間有限，09:00 入園煮食與足湯約 2 小時，11:00 轉往三星市區午餐採買，13:00 即可返程，仍能完整體驗地熱煮食。</p></div>
+          </details>
+          <details>
+            <summary><span>03</span>適合帶幼兒或長輩嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>整體適合親子與長輩，但高溫煮食區必須由成人操作。建議平日上午抵達、避開人潮，並留意濕滑地面、曝曬與泡腳時間。</p></div>
+          </details>
+          <details>
+            <summary><span>04</span>附近還有什麼可以順遊？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>園區周邊可順遊長埤湖、三星市區（三星蔥）、天送埤車站與羅東夜市，串成宜蘭山線的一日行程。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <TopicLinks current="itinerary" />
+  </main>
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,175 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
+import Icon from '@/components/Icon.astro';
+import { site, onsen, services } from '@/data/site';
+
+const pageUrl = `${site.url}/tickets-and-facilities`;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: '門票與設施', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '清水地熱公園需要門票嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '公園目前免費入園；停車、食材、竹簍租借與部分泡湯體驗可能另外收費，實際金額以園區當日公告為準。' },
+      },
+      {
+        '@type': 'Question',
+        name: '足湯免費嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '園區的足湯區免費使用，建議自備小毛巾；泡腳前先測試水溫，身體不適者避免入水。' },
+      },
+      {
+        '@type': 'Question',
+        name: '泡湯（湯屋）怎麼收費？',
+        acceptedAnswer: { '@type': 'Answer', text: '收費泡湯設施的票價與開放時段會隨季節與維護調整，通常需準備泳衣、泳帽與毛巾；是否提供租借或販售以當日現場為準。' },
+      },
+      {
+        '@type': 'Question',
+        name: '園區內有哪些設施？',
+        acceptedAnswer: { '@type': 'Answer', text: '園區內設有公共廁所、汽機車停車空間、簡餐與農特產攤商；周邊還有住宿、商超與加油充電據點，選擇有限，建議上山前先補給。' },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="清水地熱門票、足湯與設施｜免費入園與泡湯說明"
+  description="清水地熱公園免費入園，另有免費足湯與收費泡湯設施。整理門票、足湯、湯屋與園區周邊設施（廁所、停車、餐飲、住宿）資訊。"
+  jsonLd={jsonLd}
+>
+  <Header />
+  <main id="main-content">
+    <section class="hero" aria-labelledby="page-title">
+      <img class="hero-image" src="/images/geothermal-pool.webp" alt="清水地熱公園地熱池與山林景觀" width="1600" height="1067" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="shell hero-content">
+        <p class="eyebrow light">TICKETS & FACILITIES</p>
+        <h1 id="page-title">門票與設施</h1>
+        <p class="hero-lead">免費入園、免費足湯，也能另付費泡湯。這篇整理價格與園區設施。</p>
+      </div>
+    </section>
+
+    <section class="section quick-section" aria-labelledby="entry-title">
+      <div class="shell">
+        <div class="section-heading centered-heading">
+          <p class="eyebrow">ENTRY & SOAKING</p>
+          <h2 id="entry-title">入園與泡腳</h2>
+          <p>清水地熱的基本體驗是免費的，先把這兩項記起來。</p>
+        </div>
+        <div class="fact-grid">
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="ticket" class="size-6" /></span>
+            <p>入園門票</p>
+            <strong>免費</strong>
+            <small>食材、竹簍與部分設施另計</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="thermometer" class="size-6" /></span>
+            <p>免費足湯</p>
+            <strong>免費使用</strong>
+            <small>建議自備小毛巾</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="clock" class="size-6" /></span>
+            <p>開放時間</p>
+            <strong>09:00–17:00</strong>
+            <small>一般時段，特殊日期以現場為準</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="info" class="size-6" /></span>
+            <p>最後核對</p>
+            <strong>{site.lastVerified}</strong>
+            <small>收費以現場公告為準</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section onsen-section" aria-labelledby="onsen-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">HOT SPRING & SAUNA</p>
+            <h2 id="onsen-title">泡湯與湯屋<br />怎麼安排</h2>
+          </div>
+          <p>{onsen.lead}</p>
+        </div>
+        <div class="onsen-grid">
+          {onsen.notes.map((note) => (
+            <article class="service-card">
+              <span class="service-icon"><Icon name={note.icon} class="size-6" /></span>
+              <h3>{note.title}</h3>
+              <p class="service-summary">{note.text}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section services-section" aria-labelledby="services-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">FACILITIES NEARBY</p>
+            <h2 id="services-title">訪客服務<br />與周邊設施</h2>
+          </div>
+          <p>以下僅依設施「類型」做中立說明，不推薦特定店家；實際營業時段與存量請以現場或地圖為準。</p>
+        </div>
+        <div class="service-grid">
+          {services.map((svc) => (
+            <article class="service-card">
+              <span class="service-icon"><Icon name={svc.icon} class="size-6" /></span>
+              <h3>{svc.title}</h3>
+              <p class="service-summary">{svc.summary}</p>
+              <p class="service-note">{svc.note}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq-section" aria-labelledby="faq-title">
+      <div class="shell faq-shell">
+        <div class="faq-heading">
+          <p class="eyebrow">QUESTIONS</p>
+          <h2 id="faq-title">門票與設施<br />常見問題</h2>
+          <p>收費與開放狀況可能因現場營運調整，仍以園區當日公告為準。</p>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary><span>01</span>清水地熱公園需要門票嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>公園目前免費入園；停車、食材、竹簍租借與部分泡湯體驗可能另外收費，實際金額以園區當日公告為準。</p></div>
+          </details>
+          <details>
+            <summary><span>02</span>足湯免費嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>園區的足湯區免費使用，建議自備小毛巾；泡腳前先測試水溫，身體不適者避免入水。</p></div>
+          </details>
+          <details>
+            <summary><span>03</span>泡湯（湯屋）怎麼收費？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>收費泡湯設施的票價與開放時段會隨季節與維護調整，通常需準備泳衣、泳帽與毛巾；是否提供租借或販售以當日現場為準。</p></div>
+          </details>
+          <details>
+            <summary><span>04</span>園區內有哪些設施？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>園區內設有公共廁所、汽機車停車空間、簡餐與農特產攤商；周邊還有住宿、商超與加油充電據點，選擇有限，建議上山前先補給。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <TopicLinks current="tickets-and-facilities" />
+  </main>
+  <Footer />
+</BaseLayout>

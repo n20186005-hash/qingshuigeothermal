@@ -1,5 +1,5 @@
 ---
-import { site } from '@/data/site';
+import { site, topicLinks } from '@/data/site';
 ---
 <footer class="site-footer">
   <div class="shell footer-grid">
@@ -7,6 +7,10 @@ import { site } from '@/data/site';
       <p class="footer-brand">清水地熱公園旅遊指南</p>
       <p class="footer-copy">把開放時間、煮食計時、交通與安全提醒整理成一張真正能在現場使用的行前頁面。</p>
     </div>
+    <nav class="footer-links" aria-label="專題導覽">
+      <span class="footer-links-title">專題導覽</span>
+      {topicLinks.map((t) => <a href={`/${t.slug}`}>{t.label}</a>)}
+    </nav>
     <div class="footer-links" aria-label="網站資訊">
       <a href="/privacy">隱私權說明</a>
       <a href="/credits">照片授權</a>

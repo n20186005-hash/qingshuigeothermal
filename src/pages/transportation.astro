@@ -1,0 +1,169 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
+import Icon from '@/components/Icon.astro';
+import { site, bus } from '@/data/site';
+
+const pageUrl = `${site.url}/transportation`;
+const mapUrl = `https://www.google.com/maps/dir/?api=1&destination=${site.coordinates.lat},${site.coordinates.lng}`;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: '交通停車', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '沒有開車也能去清水地熱嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '可搭乘宜蘭縣公車綠 17 往三星、清水地熱方向，但班次有限、部分採預約制；規劃時務必確認去回程時刻，尤其留意回程末班車。' },
+      },
+      {
+        '@type': 'Question',
+        name: '停車要收費嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '園區設有汽、機車停車空間，收費依週邊現場公告為準（常見小客車每次約 NT$50、機車每次約 NT$20）；假日與晴日容易客滿，早點抵達較易停車。' },
+      },
+      {
+        '@type': 'Question',
+        name: '導航地址是什麼？',
+        acceptedAnswer: { '@type': 'Answer', text: `園區地址為 ${site.address}，座標 ${site.coordinates.lat}, ${site.coordinates.lng}。建議以地圖導航設定上述地址或經緯度前往。` },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="清水地熱公園交通與停車｜自駕、綠 17 公車與停車費"
+  description="清水地熱公園怎麼去：自駕從羅東、三星方向最順，停車費用小客車每次約 NT$50；亦可搭綠 17 公車，附園區地址、座標與地圖導航。"
+  jsonLd={jsonLd}
+>
+  <Header />
+  <main id="main-content">
+    <section class="hero" aria-labelledby="page-title">
+      <img class="hero-image" src="/images/geothermal-zone.webp" alt="清水地熱公園周邊山林與地熱設施" width="1600" height="1067" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="shell hero-content">
+        <p class="eyebrow light">GETTING THERE</p>
+        <h1 id="page-title">交通停車</h1>
+        <p class="hero-lead">藏在溪谷裡，自駕最輕鬆；不開車也能搭綠 17，但要把班次算好。</p>
+      </div>
+    </section>
+
+    <section class="section transport-section" aria-labelledby="drive-title">
+      <div class="shell transport-shell">
+        <div class="transport-copy">
+          <p class="eyebrow">BY CAR</p>
+          <h2 id="drive-title">自駕最順<br />從羅東、三星出發</h2>
+          <p>最後一段為山區道路，假日容易在入口前排隊。建議平日開園前後抵達，並提前在山區市鎮補給。</p>
+          <div class="transport-actions">
+            <a class="button button-dark" href={mapUrl} target="_blank" rel="noopener noreferrer">開啟地圖導航 <Icon name="external" class="size-4" /></a>
+            <button class="button button-outline" type="button" data-copy-address data-address={site.address}>複製地址 <Icon name="copy" class="size-4" /></button>
+          </div>
+          <p class="copy-feedback" data-copy-feedback aria-live="polite"></p>
+        </div>
+        <div class="transport-cards">
+          <article>
+            <span><Icon name="car" class="size-6" /></span>
+            <div><p>停車參考</p><strong>小客車每次 NT$50</strong><small>機車常見為每次 NT$20；以現場公告為準。</small></div>
+          </article>
+          <article>
+            <span><Icon name="clock" class="size-6" /></span>
+            <div><p>避開人潮</p><strong>上午開園前後抵達</strong><small>假日中午通常最容易遇到車位與座位壓力。</small></div>
+          </article>
+          <article>
+            <span><Icon name="map" class="size-6" /></span>
+            <div><p>導航地址</p><strong>{site.address}</strong><small>座標 {site.coordinates.lat}, {site.coordinates.lng}</small></div>
+          </article>
+          <article>
+            <span><Icon name="phone" class="size-6" /></span>
+            <div><p>園區電話</p><strong><a href={`tel:${site.phone.replaceAll('-', '')}`}>{site.phone}</a></strong><small>專程前往或遇特殊天候，建議先確認。</small></div>
+          </article>
+        </div>
+        <div class="transport-map">
+          <div class="transport-map-heading">
+            <div>
+              <p class="eyebrow">LOCATION MAP</p>
+              <h3>清水地熱公園位置</h3>
+            </div>
+            <p>可拖曳地圖查看周邊道路，點擊「查看較大的地圖」可開啟完整導航。</p>
+          </div>
+          <iframe
+            src={site.mapsEmbedSrc}
+            width="600"
+            height="450"
+            style="border:0;"
+            allowfullscreen
+            loading="lazy"
+            referrerpolicy="strict-origin-when-cross-origin"
+            title="清水地熱公園 Google 地圖"
+          ></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services-section" aria-labelledby="bus-title">
+      <div class="shell">
+        <div class="bus-panel">
+          <div class="bus-head">
+            <p class="eyebrow">BY BUS · 綠 17</p>
+            <h3 id="bus-title">沒開車怎麼去：綠 17 公車</h3>
+            <p>{bus.lead}</p>
+          </div>
+          <ol class="bus-list">
+            {bus.points.map((point) => <li>{point}</li>)}
+          </ol>
+          <a class="button button-outline" href={bus.officialUrl} target="_blank" rel="noopener noreferrer">查詢官方班次與預約 <Icon name="external" class="size-4" /></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq-section" aria-labelledby="faq-title">
+      <div class="shell faq-shell">
+        <div class="faq-heading">
+          <p class="eyebrow">QUESTIONS</p>
+          <h2 id="faq-title">交通常見問題</h2>
+          <p>班次與收費可能調整，規劃時以官方公告為準。</p>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary><span>01</span>沒有開車也能去清水地熱嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>可搭乘宜蘭縣公車綠 17 往三星、清水地熱方向，但班次有限、部分採預約制；規劃時務必確認去回程時刻，尤其留意回程末班車。</p></div>
+          </details>
+          <details>
+            <summary><span>02</span>停車要收費嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>園區設有汽、機車停車空間，收費依週邊現場公告為準（常見小客車每次約 NT$50、機車每次約 NT$20）；假日與晴日容易客滿，早點抵達較易停車。</p></div>
+          </details>
+          <details>
+            <summary><span>03</span>導航地址是什麼？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>園區地址為 {site.address}，座標 {site.coordinates.lat}, {site.coordinates.lng}。建議以地圖導航設定上述地址或經緯度前往。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <TopicLinks current="transportation" />
+  </main>
+  <Footer />
+
+  <script define:vars={{ address: site.address }}>
+    const copyButton = document.querySelector('[data-copy-address]');
+    const copyFeedback = document.querySelector('[data-copy-feedback]');
+    copyButton?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(address);
+        if (copyFeedback) copyFeedback.textContent = '地址已複製。';
+      } catch {
+        if (copyFeedback) copyFeedback.textContent = `請手動複製：${address}`;
+      }
+    });
+  </script>
+</BaseLayout>

@@ -4,6 +4,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import Icon from '@/components/Icon.astro';
 import Weather from '@/components/Weather.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
 import {
   site,
   rating,
@@ -89,7 +90,11 @@ const jsonLd = [
   },
 ];
 ---
-<BaseLayout jsonLd={jsonLd}>
+<BaseLayout
+  title="清水地熱公園攻略｜開放時間、門票、煮蛋、交通停車"
+  description="宜蘭清水地熱公園旅遊指南：整理最新開放時間、免費入園資訊、地熱煮蛋時間、竹簍租借、停車費用、泡腳設施與交通方式，出發前快速掌握實用資訊。"
+  jsonLd={jsonLd}
+>
   <div id="top"></div>
   <Header />
 
@@ -101,8 +106,8 @@ const jsonLd = [
       <div class="steam steam-two" aria-hidden="true"></div>
       <div class="shell hero-content">
         <p class="eyebrow light">宜蘭・大同鄉・清水溪谷</p>
-        <h1 id="hero-title">山谷裡的<br /><em>天然廚房</em></h1>
-        <p class="hero-lead">把雞蛋與玉米放進近沸騰的地熱泉，在白色蒸氣與山林之間，完成一頓最有宜蘭味的野餐。</p>
+        <h1 id="hero-title">清水地熱公園<br /><em>宜蘭地熱煮蛋・泡腳旅遊指南</em></h1>
+        <p class="hero-lead">山谷裡的天然廚房：把雞蛋與玉米放進近沸騰的地熱泉，在白色蒸氣與山林之間，完成一頓最有宜蘭味的野餐。</p>
         <div class="hero-actions">
           <a class="button button-primary" href="#timer">開啟煮食計時器 <Icon name="arrow" class="size-5" /></a>
           <a class="button button-ghost" href="#quick-info">先看行前資訊</a>
@@ -118,11 +123,11 @@ const jsonLd = [
 
     <section class="summer-notice" aria-labelledby="summer-notice-title">
       <div class="shell summer-notice-inner">
-        <div class="notice-date"><span>2026</span><strong>暑期</strong></div>
+        <div class="notice-date"><span>OPEN</span><strong>09–17</strong></div>
         <div class="notice-copy">
-          <p class="eyebrow">SEASONAL HOURS</p>
-          <h2 id="summer-notice-title">7/20–8/31 延長開放至 08:00–18:00</h2>
-          <p>一般營運時間通常為 09:00–17:00。山區天候、颱風或設備維護可能影響開園，出發當日仍建議再次確認。</p>
+          <p class="eyebrow">OPENING HOURS</p>
+          <h2 id="summer-notice-title">一般開放時間　09:00–17:00</h2>
+          <p>2026 年暑期（7/20–8/31）曾延長為 08:00–18:00，目前已結束；颱風、豪雨或維護期間可能臨時休園，出發當日仍以園區與宜蘭縣政府公告為準。</p>
         </div>
         <div class="notice-status"><span class="status-dot"></span><span>資料核對：{site.lastVerified}</span></div>
       </div>
@@ -151,7 +156,7 @@ const jsonLd = [
           <div class="tip-symbol"><span>早</span></div>
           <div>
             <p class="eyebrow">BEST ARRIVAL</p>
-            <h3>平日 08:00–09:30；假日盡量開園前後抵達</h3>
+            <h3>平日 09:00–10:30；假日盡量開園前後抵達</h3>
             <p>比較容易停車、找到座位，也能避開中午煮食區最悶熱與最擁擠的時段。</p>
           </div>
         </div>
@@ -629,6 +634,8 @@ const jsonLd = [
         </div>
       </div>
     </section>
+
+    <TopicLinks />
 
     <section class="section sources-section" aria-labelledby="sources-title">
       <div class="shell">

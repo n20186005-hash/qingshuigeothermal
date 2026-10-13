@@ -1,17 +1,17 @@
 export const site = {
   domain: 'QingshuiGeothermal.com',
   url: 'https://qingshuigeothermal.com',
-  title: '清水地熱公園攻略 2026｜宜蘭免費煮食、足湯、交通與門票',
+  title: '清水地熱公園旅遊指南',
   shortTitle: '清水地熱',
   description:
-    '2026 宜蘭大同清水地熱公園最新攻略：免費入園、95°C 地熱煮食（溫泉蛋／玉米計時器）、免費足湯、停車收費與綠17公車交通、季節策略與親子安全一次掌握。',
+    '宜蘭清水地熱公園旅遊指南：整理最新開放時間、免費入園資訊、地熱煮蛋時間、竹簍租借、停車費用、泡腳設施與交通方式，出發前快速掌握實用資訊。',
   phone: '03-989-4500',
   address: '宜蘭縣大同鄉三星路八段501巷150號',
   coordinates: {
     lat: 24.6118089,
     lng: 121.6365653,
   },
-  lastVerified: '2026-09-16',
+  lastVerified: '2026-10-13',
   ga4: 'G-HXM22WWPKP',
   mapsUrl: 'https://maps.app.goo.gl/FPUaiRQjNG8B9pUf6',
   mapsEmbedSrc:
@@ -21,9 +21,9 @@ export const site = {
 // 最新景點評分與評價（同步自 Google 地圖使用者評價）
 export const rating = {
   score: 4.5,
-  count: 24715,
+  count: 24831,
   source: 'Google 地圖',
-  syncMonth: '2026 年 9 月',
+  syncMonth: '2026 年 10 月',
   mapsUrl: site.mapsUrl,
   // 頁面展示用的評價概述（非逐條引用，僅歸納常見主題並標示來源）
   summary:
@@ -38,6 +38,15 @@ export const navigation = [
   { label: '交通停車', href: '#transport' },
   { label: '季節策略', href: '#season' },
   { label: '常見問題', href: '#faq' },
+];
+
+// 專題頁（與首頁互鏈，擴大收錄面；slug 即路徑）
+export const topicLinks = [
+  { slug: 'opening-hours', label: '開放時間', desc: '每日 09:00–17:00 與休園說明' },
+  { slug: 'geothermal-cooking', label: '地熱煮食', desc: '煮蛋時間、竹簍租借與安全' },
+  { slug: 'transportation', label: '交通停車', desc: '自駕、綠 17 公車與停車費' },
+  { slug: 'tickets-and-facilities', label: '門票與設施', desc: '免費入園、足湯與泡湯' },
+  { slug: 'itinerary', label: '一日遊路線', desc: '半日／全日行程與周邊順遊' },
 ];
 
 export const quickFacts = [
@@ -117,16 +126,16 @@ export const gallery = [
 ];
 
 export const routes = [
-  { time: '08:00', title: '清水地熱公園', meta: '煮食、早餐、泡腳｜約 2.5 小時' },
-  { time: '11:00', title: '長埤湖', meta: '環湖散步與山景｜約 1 小時' },
-  { time: '12:30', title: '三星市區', meta: '午餐與三星蔥料理｜約 1.5 小時' },
+  { time: '09:00', title: '清水地熱公園', meta: '煮食、早餐、泡腳｜約 2.5 小時' },
+  { time: '11:30', title: '長埤湖', meta: '環湖散步與山景｜約 1 小時' },
+  { time: '13:00', title: '三星市區', meta: '午餐與三星蔥料理｜約 1.5 小時' },
   { time: '14:30', title: '天送埤車站', meta: '老車站、街區散步｜約 45 分鐘' },
   { time: '16:00', title: '返回羅東', meta: '傍晚可接羅東夜市' },
 ];
 
 // 半日路線（精簡版，適合時間有限或體力有限者）
 export const routesHalfDay = [
-  { time: '08:30', title: '清水地熱公園', meta: '煮食、足湯｜約 2 小時' },
+  { time: '09:00', title: '清水地熱公園', meta: '煮食、足湯｜約 2 小時' },
   { time: '11:00', title: '三星市區', meta: '午餐與三星蔥採買｜約 1.5 小時' },
   { time: '13:00', title: '返回羅東', meta: '可接羅東夜市或返程' },
 ];
@@ -137,8 +146,8 @@ export const faqs = [
     answer: '公園目前免費入園；停車、食材、竹簍租借與部分泡湯體驗可能另外收費，實際金額以園區當日公告為準。',
   },
   {
-    question: '2026 年暑假幾點開放？',
-    answer: '宜蘭縣政府公告 2026 年 7 月 20 日至 8 月 31 日調整為 08:00–18:00；一般時段通常為 09:00–17:00。颱風、豪雨或維護期間可能臨時休園。',
+    question: '清水地熱公園幾點開放？',
+    answer: '一般時段為每日 09:00–17:00。2026 年暑期（7/20–8/31）曾延長為 08:00–18:00，目前已結束；颱風、豪雨或維護期間可能臨時休園，出發當日仍以園區與宜蘭縣政府公告為準。',
   },
   {
     question: '可以自己帶雞蛋、玉米嗎？',

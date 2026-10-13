@@ -1,0 +1,210 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
+import Icon from '@/components/Icon.astro';
+import { site, cookingSteps, foods, rental } from '@/data/site';
+
+const pageUrl = `${site.url}/geothermal-cooking`;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: '地熱煮食', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '雞蛋要煮幾分鐘才熟？',
+        acceptedAnswer: { '@type': 'Answer', text: '本站以 12 分鐘作為全熟參考值；實際會受池溫、蛋量與尺寸影響，請優先遵循現場標示，兒童食用建議確認完全熟透。' },
+      },
+      {
+        '@type': 'Question',
+        name: '一定要租竹簍嗎？可以自己帶嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '地熱池需使用符合園區規範的煮食器具，不應使用塑膠網或不耐高溫容器。竹簍通常現場租借，押金與消費門檻可能調整，請看當日櫃檯資訊。' },
+      },
+      {
+        '@type': 'Question',
+        name: '可以自帶雞蛋、玉米嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '通常可以自備適合水煮的食材，但容器、包裝與可否下池仍須遵守現場規定。容易散開或不易熟透的食材不建議攜帶。' },
+      },
+      {
+        '@type': 'Question',
+        name: '玉米要煮多久？',
+        acceptedAnswer: { '@type': 'Answer', text: '玉米約 20 分鐘，較粗的玉米可切段受熱更均勻；芋頭、地瓜、花生等則需 30 分鐘左右，實際時間仍依現場池溫調整。' },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="清水地熱煮蛋與煮食攻略｜時間、竹簍與安全"
+  description="清水地熱公園地熱煮食攻略：近沸騰泉溫、雞蛋 12 分鐘、玉米 20 分鐘等煮食時間表，竹簍租借方式與高溫安全提醒一次看懂。"
+  jsonLd={jsonLd}
+>
+  <Header />
+  <main id="main-content">
+    <section class="hero" aria-labelledby="page-title">
+      <img class="hero-image" src="/images/geothermal-cooking.webp" alt="竹簍放入清水地熱煮食池的近景" width="1600" height="1067" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="shell hero-content">
+        <p class="eyebrow light">GEOTHERMAL COOKING</p>
+        <h1 id="page-title">地熱煮食</h1>
+        <p class="hero-lead">把食材放進近沸騰的地熱泉，是清水地熱最招牌的體驗。這篇整理時間、器具與安全。</p>
+      </div>
+    </section>
+
+    <section class="section quick-section" aria-labelledby="how-title">
+      <div class="shell">
+        <div class="section-heading split-heading">
+          <div>
+            <p class="eyebrow">HOW IT WORKS</p>
+            <h2 id="how-title">為什麼能直接煮？</h2>
+          </div>
+          <p>清水地熱露頭水溫接近沸點（約 95°C），天然就能把食材煮熟。煮食池屬高溫開放水域，操作時請由成人負責，並與蒸氣、濕滑區域保持距離。</p>
+        </div>
+        <div class="fact-grid">
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="thermometer" class="size-6" /></span>
+            <p>地熱泉溫</p>
+            <strong>約 95°C</strong>
+            <small>高溫區請保持距離</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="ticket" class="size-6" /></span>
+            <p>入園門票</p>
+            <strong>免費</strong>
+            <small>食材與竹簍另計</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="clock" class="size-6" /></span>
+            <p>建議停留</p>
+            <strong>2–3 小時</strong>
+            <small>含煮食、用餐與泡腳</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="calendar" class="size-6" /></span>
+            <p>一般時段</p>
+            <strong>09:00–17:00</strong>
+            <small>特殊日期以現場公告為準</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cooking-section" aria-labelledby="steps-title">
+      <div class="shell">
+        <div class="section-heading centered-heading">
+          <p class="eyebrow">COOKING STEPS</p>
+          <h2 id="steps-title">第一次來，照著這樣煮</h2>
+          <p>不用複雜器材，重點是分好熟成時間、記住竹簍編號，並把高溫操作交給成人。</p>
+        </div>
+        <ol class="steps-grid">
+          {cookingSteps.map((step) => (
+            <li class="step-card">
+              <span class="step-number">{step.number}</span>
+              <div class="step-line" aria-hidden="true"></div>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section food-section" aria-labelledby="food-title">
+      <div class="shell">
+        <div class="section-heading split-heading compact-heading">
+          <div>
+            <p class="eyebrow">COOKING TIMES</p>
+            <h2 id="food-title">帶什麼最好煮？</h2>
+          </div>
+          <p>越簡單、越容易熟透的食材越適合。以下為行前抓時間用的參考值，不取代現場說明。</p>
+        </div>
+        <div class="food-grid">
+          {foods.map((food) => (
+            <article class="food-card">
+              <div class="food-card-top"><span>{food.emoji}</span><small>{food.label}</small></div>
+              <h3>{food.name}</h3>
+              <p class="food-time"><strong>{food.minutes}</strong><span>分鐘<br />參考</span></p>
+              <p>{food.hint}</p>
+            </article>
+          ))}
+        </div>
+        <div class="rental-wrap">
+          <div class="rental-head">
+            <p class="eyebrow">ON-SITE RENTAL</p>
+            <h3>竹簍租借與食材</h3>
+            <p>{rental.lead}</p>
+          </div>
+          <div class="service-grid">
+            {rental.notes.map((note) => (
+              <article class="service-card">
+                <span class="service-icon"><Icon name={note.icon} class="size-6" /></span>
+                <h3>{note.title}</h3>
+                <p class="service-summary">{note.text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+        <p class="fine-print">※ 池溫、食材大小與竹簍內數量都會影響時間；肉類、蛋類與根莖類食用前務必確認完全熟透。</p>
+      </div>
+    </section>
+
+    <section class="safety-section" aria-labelledby="safety-title">
+      <div class="shell safety-shell">
+        <div class="safety-icon"><Icon name="shield" class="size-10" /></div>
+        <div>
+          <p class="eyebrow light">HOT WATER SAFETY</p>
+          <h2 id="safety-title">蒸氣很美，泉水真的很燙</h2>
+          <p>煮食池接近沸騰。兒童不可獨立提放竹簍，取出時要避開熱水滴落方向；雨天留意濕滑，身體不適或有開放性傷口時不要泡腳。</p>
+        </div>
+        <ul>
+          <li>成人操作竹簍</li>
+          <li>不使用塑膠籃</li>
+          <li>食材完全熟透</li>
+          <li>豪雨颱風不前往</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section faq-section" aria-labelledby="faq-title">
+      <div class="shell faq-shell">
+        <div class="faq-heading">
+          <p class="eyebrow">QUESTIONS</p>
+          <h2 id="faq-title">煮食常見問題</h2>
+          <p>時間與規定可能因現場營運調整，仍以園區當日公告為準。</p>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary><span>01</span>雞蛋要煮幾分鐘才熟？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>本站以 12 分鐘作為全熟參考值；實際會受池溫、蛋量與尺寸影響，請優先遵循現場標示，兒童食用建議確認完全熟透。</p></div>
+          </details>
+          <details>
+            <summary><span>02</span>一定要租竹簍嗎？可以自己帶嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>地熱池需使用符合園區規範的煮食器具，不應使用塑膠網或不耐高溫容器。竹簍通常現場租借，押金與消費門檻可能調整，請看當日櫃檯資訊。</p></div>
+          </details>
+          <details>
+            <summary><span>03</span>可以自帶雞蛋、玉米嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>通常可以自備適合水煮的食材，但容器、包裝與可否下池仍須遵守現場規定。容易散開或不易熟透的食材不建議攜帶。</p></div>
+          </details>
+          <details>
+            <summary><span>04</span>玉米要煮多久？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>玉米約 20 分鐘，較粗的玉米可切段受熱更均勻；芋頭、地瓜、花生等則需 30 分鐘左右，實際時間仍依現場池溫調整。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <TopicLinks current="geothermal-cooking" />
+  </main>
+  <Footer />
+</BaseLayout>

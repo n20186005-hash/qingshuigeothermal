@@ -1,0 +1,168 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
+import Icon from '@/components/Icon.astro';
+import { site } from '@/data/site';
+
+const pageUrl = `${site.url}/opening-hours`;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
+      { '@type': 'ListItem', position: 2, name: '開放時間', item: pageUrl },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: '清水地熱公園幾點開放、幾點關閉？',
+        acceptedAnswer: { '@type': 'Answer', text: '一般時段為每日 09:00–17:00。2026 年暑期（7/20–8/31）曾延長為 08:00–18:00，目前已結束，請以一般時段規劃。' },
+      },
+      {
+        '@type': 'Question',
+        name: '什麼時候去人最少？',
+        acceptedAnswer: { '@type': 'Answer', text: '平日（非假日）上午開園前後、以及冬季遊客較少的時段通常最舒適；連假與暑假期間建議早點抵達，避開煮食區最擁擠的中午時段。' },
+      },
+      {
+        '@type': 'Question',
+        name: '遇到颱風或下雨會休園嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '山區遇颱風、豪雨、溪水暴漲或設備維護時，園區可能臨時休園或調整開放範圍。出發當日請先確認宜蘭縣政府與園區的最新公告，不要勉強前往。' },
+      },
+      {
+        '@type': 'Question',
+        name: '晚上可以進去嗎？',
+        acceptedAnswer: { '@type': 'Answer', text: '園區一般於 17:00 關閉，夜間不開放進入煮食區與溪谷；傍晚前後仍可接羅東夜市等周邊行程。' },
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="清水地熱公園開放時間｜09:00–17:00 與休園說明"
+  description="清水地熱公園開放時間：一般時段每日 09:00–17:00，暑期延長場次已結束。整理颱風雨天休園、出發前確認方式與人潮較少的時段建議。"
+  jsonLd={jsonLd}
+>
+  <Header />
+  <main id="main-content">
+    <section class="hero" aria-labelledby="page-title">
+      <img class="hero-image" src="/images/geothermal-steam.webp" alt="清水地熱公園白色蒸氣與溪谷實景" width="1600" height="1067" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="shell hero-content">
+        <p class="eyebrow light">OPENING HOURS</p>
+        <h1 id="page-title">開放時間</h1>
+        <p class="hero-lead">把最常被問的「幾點開、幾點關、會不會休園」一次說清楚，出發前快速確認。</p>
+      </div>
+    </section>
+
+    <section class="section quick-section" aria-labelledby="now-title">
+      <div class="shell">
+        <div class="section-heading centered-heading">
+          <p class="eyebrow">CURRENT HOURS</p>
+          <h2 id="now-title">目前開放時間</h2>
+          <p>現在為一般時段，請依下列時間規劃行程。</p>
+        </div>
+        <div class="fact-grid">
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="clock" class="size-6" /></span>
+            <p>每日開園</p>
+            <strong>09:00</strong>
+            <small>上午開園，建議平日早點抵達</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="clock" class="size-6" /></span>
+            <p>每日閉園</p>
+            <strong>17:00</strong>
+            <small>傍晚前完成煮食與離園</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="calendar" class="size-6" /></span>
+            <p>適合停留</p>
+            <strong>2–3 小時</strong>
+            <small>含煮食、用餐與泡腳</small>
+          </article>
+          <article class="fact-card">
+            <span class="fact-icon"><Icon name="info" class="size-6" /></span>
+            <p>最後核對</p>
+            <strong>{site.lastVerified}</strong>
+            <small>仍以現場公告為準</small>
+          </article>
+        </div>
+        <div class="arrival-tip">
+          <div class="tip-symbol"><span>注</span></div>
+          <div>
+            <p class="eyebrow">SEASONAL NOTE</p>
+            <h3>2026 暑期延長場次已結束</h3>
+            <p>7/20–8/31 曾延長為 08:00–18:00，目前已恢復一般時段 09:00–17:00。特殊日期的開放與收費調整，一律以園區與宜蘭縣政府當日公告為準。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section transport-section" id="closure" aria-labelledby="closure-title">
+      <div class="shell transport-shell">
+        <div class="transport-copy">
+          <p class="eyebrow">BEFORE YOU GO</p>
+          <h2 id="closure-title">什麼時候可能<br />臨時休園</h2>
+          <p>清水地熱位處山區溪谷，開放狀況會受天候與維護影響。以下情形請特別留意，出發前務必再次確認。</p>
+        </div>
+        <div class="transport-cards">
+          <article>
+            <span><Icon name="shield" class="size-6" /></span>
+            <div><p>颱風與豪雨</p><strong>溪水暴漲風險</strong><small>颱風、豪雨或告警期間通常不開放，切勿前往溪床與低窪地。</small></div>
+          </article>
+          <article>
+            <span><Icon name="info" class="size-6" /></span>
+            <div><p>設備維護</p><strong>不定期調整</strong><small>管線、煮食池或設施維護時，可能局部封閉或休園。</small></div>
+          </article>
+          <article>
+            <span><Icon name="phone" class="size-6" /></span>
+            <div><p>園區電話</p><strong><a href={`tel:${site.phone.replaceAll('-', '')}`}>{site.phone}</a></strong><small>專程煮食或遇特殊天候，建議先致電確認。</small></div>
+          </article>
+          <article>
+            <span><Icon name="map" class="size-6" /></span>
+            <div><p>官方公告</p><strong>宜蘭縣政府</strong><small>出發前可查宜蘭縣政府交通旅遊網與觀光署最新資訊。</small></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq-section" aria-labelledby="faq-title">
+      <div class="shell faq-shell">
+        <div class="faq-heading">
+          <p class="eyebrow">QUESTIONS</p>
+          <h2 id="faq-title">關於開放時間<br />的常見問題</h2>
+          <p>資訊可能因季節、天候或現場營運調整，本站為獨立旅遊資訊整理，非官方網站。</p>
+        </div>
+        <div class="faq-list">
+          <details open>
+            <summary><span>01</span>清水地熱公園幾點開放、幾點關閉？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>一般時段為每日 09:00–17:00。2026 年暑期（7/20–8/31）曾延長為 08:00–18:00，目前已結束，請以一般時段規劃。</p></div>
+          </details>
+          <details>
+            <summary><span>02</span>什麼時候去人最少？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>平日（非假日）上午開園前後、以及冬季遊客較少的時段通常最舒適；連假與暑假期間建議早點抵達，避開煮食區最擁擠的中午時段。</p></div>
+          </details>
+          <details>
+            <summary><span>03</span>遇到颱風或下雨會休園嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>山區遇颱風、豪雨、溪水暴漲或設備維護時，園區可能臨時休園或調整開放範圍。出發當日請先確認宜蘭縣政府與園區的最新公告，不要勉強前往。</p></div>
+          </details>
+          <details>
+            <summary><span>04</span>晚上可以進去嗎？<span class="faq-plus" aria-hidden="true"></span></summary>
+            <div><p>園區一般於 17:00 關閉，夜間不開放進入煮食區與溪谷；傍晚前後仍可接羅東夜市等周邊行程。</p></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <TopicLinks current="opening-hours" />
+  </main>
+  <Footer />
+</BaseLayout>
