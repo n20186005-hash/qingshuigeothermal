@@ -1,0 +1,29 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+---
+<BaseLayout title="Cookie 設定" description="管理清水地熱公園旅遊指南的必要偏好與選用分析 Cookie。">
+  <Header />
+  <main id="main-content" class="legal-page"><div class="shell legal-shell">
+    <p class="eyebrow">COOKIE SETTINGS</p><h1>Cookie 設定</h1>
+    <p class="legal-lead">你可以決定是否允許本站使用流量分析工具；不同意也能正常閱讀景點指南。</p>
+    <section><h2>必要儲存</h2><p>用於記住本頁的選擇，不涉及廣告追蹤。此偏好設定是網站正常保存選擇所需。</p></section>
+    <section><h2>分析 Cookie（可選）</h2><p>同意後，本站才載入 Google Analytics 4，以了解彙整的頁面使用情形。拒絕後不會主動載入分析程式。</p></section>
+    <section aria-label="分析偏好"><h2>目前選擇</h2><p id="cookie-status" aria-live="polite">正在讀取偏好…</p>
+      <div class="cookie-actions"><button class="button button-dark" id="accept-analytics" type="button">同意分析 Cookie</button><button class="button button-outline" id="reject-analytics" type="button">拒絕分析 Cookie</button></div>
+      <p id="cookie-feedback" aria-live="polite"></p><p>變更選擇會立即保存；若曾同意，拒絕後也會要求分析工具停用，但先前已設定的第三方 Cookie 可另外在瀏覽器設定中清除。</p>
+    </section>
+    <a class="button button-dark" href="/privacy-policy">閱讀隱私政策</a>
+  </div></main><Footer />
+</BaseLayout>
+<script>
+  const key = 'qingshui-analytics-consent';
+  const status = document.getElementById('cookie-status');
+  const feedback = document.getElementById('cookie-feedback');
+  const update = () => { if (status) status.textContent = localStorage.getItem(key) === 'accepted' ? '目前已同意分析 Cookie' : localStorage.getItem(key) === 'rejected' ? '目前已拒絕分析 Cookie' : '尚未選擇（分析工具不會載入）'; };
+  update();
+  document.getElementById('accept-analytics')?.addEventListener('click', () => { localStorage.setItem(key, 'accepted'); update(); if (feedback) feedback.textContent = '已儲存選擇，重新整理頁面後啟用分析。'; });
+  document.getElementById('reject-analytics')?.addEventListener('click', () => { localStorage.setItem(key, 'rejected'); (window as Window & { ['ga-disable-G-HXM22WWPKP']?: boolean })['ga-disable-G-HXM22WWPKP'] = true; update(); if (feedback) feedback.textContent = '已儲存拒絕選擇。'; });
+</script>
+<style>.cookie-actions{display:flex;gap:1rem;flex-wrap:wrap;margin:1rem 0}.cookie-actions button{cursor:pointer}</style>
