@@ -11,7 +11,7 @@ export const site = {
     lat: 24.6118089,
     lng: 121.6365653,
   },
-  lastVerified: '2026-10-13',
+  lastVerified: '2026-11-18',
   ga4: 'G-HXM22WWPKP',
   mapsUrl: 'https://maps.app.goo.gl/FPUaiRQjNG8B9pUf6',
   mapsEmbedSrc:
