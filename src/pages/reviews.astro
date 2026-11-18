@@ -1,0 +1,17 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { rating } from '@/data/site';
+---
+<BaseLayout title="評分與評價" description="清水地熱公園 Google 地圖評分、評價總數、同步時間與來源說明。">
+  <Header />
+  <main id="main-content" class="legal-page"><div class="shell legal-shell">
+    <p class="eyebrow">REVIEWS</p><h1>評分與評價</h1>
+    <p class="legal-lead">清水地熱公園遊客評價摘要</p>
+    <section><h2>Google 地圖評分</h2><p><strong>{rating.score.toFixed(1)} / 5 · {rating.count.toLocaleString('zh-Hant-TW')} 則評價</strong></p><p>資料來源：{rating.source}使用者評價；同步時間：{rating.syncMonth}。此為指定月份的資料快照，實際評分與總量會繼續變動。</p><p><a href={rating.mapsUrl} target="_blank" rel="noopener noreferrer">在 Google 地圖查看全部評價 ↗</a></p></section>
+    <section><h2>遊客經驗重點</h2><p>{rating.summary}</p><p>上述為常見體驗主題的概述，不代表任何個別訪客的逐字評論。</p></section>
+    <section><h2>來源與權利</h2><p>評分與評價數來自 Google 地圖，個別評論的著作權屬原作者及相關平台權利人。請到來源網站查閱當下最新資訊。</p></section>
+    <a class="button button-dark" href="/">返回首頁</a>
+  </div></main><Footer />
+</BaseLayout>
