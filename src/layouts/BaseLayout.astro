@@ -57,13 +57,20 @@ const imageUrl = new URL(image, site.url).toString();
 
     {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
-    <!-- Google Analytics 4 -->
-    <script async src={`https://www.googletagmanager.com/gtag/js?id=${site.ga4}`}></script>
+    <!-- Load optional analytics only after an affirmative cookie choice. -->
     <script is:inline define:vars={{ measurementId: site.ga4 }}>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ window.dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', measurementId, { anonymize_ip: true });
+      try {
+        if (localStorage.getItem('qingshui-analytics-consent') === 'accepted') {
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){ window.dataLayer.push(arguments); }
+          gtag('js', new Date());
+          gtag('config', measurementId, { anonymize_ip: true });
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+          document.head.appendChild(script);
+        }
+      } catch (_) { /* Storage may be unavailable; analytics remains disabled. */ }
     </script>
   </head>
   <body>
