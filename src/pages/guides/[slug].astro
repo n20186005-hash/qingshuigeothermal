@@ -4,6 +4,7 @@ import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import TopicLinks from '@/components/TopicLinks.astro';
 import { expansionGuides, type Guide } from '@/data/expansion';
+import { guideDetails } from '@/data/guideDetails';
 import { site, rating } from '@/data/site';
 
 const guide = expansionGuides.find((item) => item.slug === Astro.params.slug) as Guide | undefined;
@@ -12,6 +13,7 @@ const pageUrl = `${site.url}/guides/${guide.slug}`;
 const hasImage = !!guide.image;
 const isPark = !['changpi-lake', 'tiansongpi-station', 'sanxing-day-trip-food'].includes(guide.slug);
 const detailPhoto = guide.slug === 'changpi-lake' ? '/images/changpi-lake-detail.jpg' : guide.slug === 'tiansongpi-station' ? '/images/tiansongpi-station-detail.jpg' : undefined;
+const details = guideDetails[guide.slug];
 const jsonLd = [
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
@@ -34,6 +36,10 @@ const jsonLd = [
         <p class="guide-hero-facts">{guide.hours}　·　<a href={guide.map} target="_blank" rel="noopener noreferrer">獨立地圖定位 ↗</a></p>
       </div>
     </section>
+    <section class="section guide-management" id="management" aria-labelledby="management-title"><div class="shell guide-management-layout">
+      <div><p class="eyebrow">ABOUT THIS PLACE</p><h2 id="management-title">關於{guide.name}</h2><p class="guide-body-copy">{details.management}</p></div>
+      <aside class="guide-management-aside"><p class="eyebrow">管理與維護</p><h3>{details.manager}</h3><p>各項開放、收費與活動規範請依管理或營運單位公布的最新資訊。</p><a href={guide.sources[0].url} target="_blank" rel="noopener noreferrer">查看管理與景點資料來源 ↗</a></aside>
+    </div></section>
     <section class="section quick-section" id="overview"><div class="shell">
       <div class="section-heading centered-heading"><p class="eyebrow">DISCOVER</p><h2>探索{guide.name}</h2><p>{guide.lead}</p></div>
       <div class="fact-grid">
@@ -47,16 +53,21 @@ const jsonLd = [
       <div class="topic-grid">{guide.features.map((feature, i) => <article class="topic-card"><p class="eyebrow">HIGHLIGHT {String(i+1).padStart(2,'0')}</p><h3>{['自然與景觀','地方特色','參觀體驗'][i] ?? '看點'}</h3><p>{feature}</p></article>)}</div>
       {detailPhoto && <figure class="guide-detail-photo"><img src={detailPhoto} width="480" height="360" loading="lazy" alt={guide.slug === 'changpi-lake' ? '長埤湖風景區官方實景補充照片' : '天送埤車站官方實景補充照片'} /><figcaption>景點實景補充照片｜來源：宜蘭縣政府「宜蘭勁好玩」觀光頁</figcaption></figure>}
     </div></section>
+    <section class="section quick-section" id="character"><div class="shell"><div class="section-heading"><p class="eyebrow">THE CHARM</p><h2>發現這個地方的魅力</h2></div>
+      <div class="topic-grid"><article class="topic-card"><p class="eyebrow">01 · HISTORY</p><h3>歷史變遷</h3><p>{details.heritage}</p></article><article class="topic-card"><p class="eyebrow">02 · ARCHITECTURE</p><h3>建築與空間特色</h3><p>{details.architecture}</p></article><article class="topic-card"><p class="eyebrow">03 · CULTURE</p><h3>地方文化與核心體驗</h3><p>{details.culture}</p></article></div>
+    </div></section>
     <section class="section quick-section" id="route"><div class="shell"><div class="section-heading"><p class="eyebrow">PLAN YOUR VISIT</p><h2>建議遊覽路線</h2><p>依現場開放、交通與天候彈性調整，以下為建議順序而非保證時刻表。</p></div>
       <div class="topic-grid">{guide.steps.map((step, i) => <article class="topic-card"><p class="eyebrow">STEP {String(i+1).padStart(2,'0')}</p><h3>{i + 1}. {step.split('，')[0]}</h3><p>{step}</p></article>)}</div>
     </div></section>
     <section class="section" id="tips"><div class="shell"><div class="section-heading"><p class="eyebrow">BEFORE YOU GO</p><h2>遊覽須知與拍照建議</h2></div>
       <div class="topic-grid">{guide.advice.map((tip, i) => <article class="topic-card"><h3>提醒 {String(i + 1).padStart(2, '0')}</h3><p>{tip}</p></article>)}</div>
       <h3>拍照機位與安全</h3><p class="guide-body-copy">{guide.photography}</p><h3>交通方式</h3><p class="guide-body-copy">{guide.transport}</p>
+      <div class="section-heading"><p class="eyebrow">PHOTO SPOTS</p><h2>值得留意的取景位置</h2></div><div class="topic-grid">{details.photoSpots.map((spot,i)=><article class="topic-card"><p class="eyebrow">SPOT {String(i+1).padStart(2,'0')}</p><h3>{spot}</h3><p>在開放且安全的位置取景，留意行人動線、現場規範與天候。</p></article>)}</div>
+      <h3>住宿與周邊行程建議</h3><p class="guide-body-copy">{details.accommodation}</p>
     </div></section>
     <section class="section quick-section" id="faq"><div class="shell"><div class="section-heading"><p class="eyebrow">FAQ</p><h2>常見問題</h2></div>
       {guide.faq.map((f) => <article class="guide-faq"><h3>{f.q}</h3><p>{f.a}</p></article>)}
-      <h3>位置與地圖</h3><p>{guide.address}</p><p><a href={guide.map} target="_blank" rel="noopener noreferrer">在 Google Maps 開啟「{guide.name}」專屬搜尋 ↗</a></p>
+      <h3>位置與地圖</h3><p>{guide.address}</p><p><a href={guide.map} target="_blank" rel="noopener noreferrer">在 Google Maps 開啟「{guide.name}」獨立導航 ↗</a></p>
       <h3>官方資料與延伸閱讀</h3><ul>{guide.sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>)}</ul>
       <p>變動資訊以管理單位或現場公告為準；本頁不展示未獨立核對的其他景點 Google 評價數。{isPark ? `清水地熱公園評價參考：${rating.source}，${rating.syncMonth}同步。` : ''}</p>
     </div></section>
@@ -75,4 +86,9 @@ const jsonLd = [
   .guide-detail-photo { max-width: 720px; margin: 2rem auto; }
   .guide-detail-photo img { width: 100%; height: auto; border-radius: 1rem; }
   .guide-detail-photo figcaption { margin-top: .75rem; font-size: .85rem; color: #53635b; }
+  .guide-management-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; align-items: start; }
+  .guide-management-aside { background: #f0f5ef; border-left: 4px solid #caa264; padding: 2rem; border-radius: .7rem; }
+  .guide-management-aside p { line-height: 1.8; }
+  .guide-management-aside a { display: inline-block; margin-top: 1rem; text-decoration: underline; }
+  @media (max-width: 760px) { .guide-management-layout { grid-template-columns: 1fr; gap: 1.5rem; } }
 </style>
