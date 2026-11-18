@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import { site } from '@/data/site';
+---
+<BaseLayout title="資料來源" description="清水地熱公園開園、交通、氣候、季節及旅遊資訊的參考來源與最後核對日期。">
+  <Header />
+  <main id="main-content" class="legal-page"><div class="shell legal-shell">
+    <p class="eyebrow">SOURCES</p><h1>資料來源</h1>
+    <p class="legal-lead">按開放資訊、氣候與交通分類，方便查閱各類資料的原始來源。最後核對：{site.lastVerified}（新加坡時間 UTC+8）。</p>
+    <section><h2>開放時間、收費與設施</h2><p>依宜蘭縣政府官方旅遊頁，清水地熱公園地址為宜蘭縣大同鄉三星路八段501巷150號，電話 03-9894500，一般開放時間每天 09:00–17:00，公園一般免費入園。食材、竹簍租借與湯屋等服務另依現場公告。</p><p>特殊假期、氣候與維護狀況可能影響開放。出發前請以官方及現場即時訊息為準。</p><ul><li><a href="https://travel.yilan.gov.tw/zh-tw/attraction/251/" target="_blank" rel="noopener noreferrer">宜蘭勁好玩｜清水地熱公園景點資料 ↗</a></li><li><a href="https://www.e-land.gov.tw/" target="_blank" rel="noopener noreferrer">宜蘭縣政府 ↗</a></li><li><a href="/opening-hours">本站開放時間詳解 →</a></li><li><a href="/tickets-and-facilities">本站門票與設施詳解 →</a></li></ul></section>
+    <section><h2>氣候與季節</h2><p>季節行程參考中央氣象署長期氣候統計與觀測資訊；氣候平均值不代表特定日期的實際天氣。山區出發當日仍須核對預報與警特報。</p><p><a href="https://www.cwa.gov.tw/" target="_blank" rel="noopener noreferrer">中央氣象署 ↗</a></p></section>
+    <section><h2>交通與周邊景點</h2><p>交通與旅遊路線參考官方交通、觀光資訊，行車時間及公車班次會變動；各獨立景點頁另外列出專屬位置和來源。</p><ul><li><a href="https://www.taiwan.net.tw/" target="_blank" rel="noopener noreferrer">交通部觀光署 ↗</a></li><li><a href="https://travel.yilan.gov.tw/" target="_blank" rel="noopener noreferrer">宜蘭勁好玩 ↗</a></li><li><a href="/transportation">本站交通停車指南 →</a></li><li><a href="/nearby-attractions">本站周邊景點 →</a></li></ul></section>
+    <section><h2>評分與圖片</h2><p>評分與評論的來源、同步月份見 <a href="/reviews">評分與評價</a>；照片說明另見 <a href="/credits">照片授權</a>。</p></section>
+    <a class="button button-dark" href="/">返回首頁</a>
+  </div></main><Footer />
+</BaseLayout>
