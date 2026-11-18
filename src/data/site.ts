@@ -21,9 +21,9 @@ export const site = {
 // 最新景點評分與評價（同步自 Google 地圖使用者評價）
 export const rating = {
   score: 4.5,
-  count: 24831,
+  count: 24959,
   source: 'Google 地圖',
-  syncMonth: '2026 年 10 月',
+  syncMonth: '2026 年 11 月',
   mapsUrl: site.mapsUrl,
   // 頁面展示用的評價概述（非逐條引用，僅歸納常見主題並標示來源）
   summary:
