@@ -1,0 +1,31 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
+import { site } from '@/data/site';
+
+const places = [
+  { name: '長埤湖風景區', slug: 'changpi-lake', tagline: '湖岸散步與山景休息站', about: '位於三星鄉、台 7 丙線沿途，有環湖步道、觀景休憩空間，是前往清水地熱時容易安排的中途停留點。', tips: '適合地熱煮食後放慢節奏，依現場步道與設施開放狀況決定停留時間。', maps: 'https://www.google.com/maps/search/?api=1&query=%E9%95%B7%E5%9F%A4%E6%B9%96%E9%A2%A8%E6%99%AF%E5%8D%80', source: 'https://travel.yilan.gov.tw/zh-tw/attraction/413/' },
+  { name: '天送埤休閒農業區', tagline: '三星農村與騎行體驗', about: '以三星田園、農村文化與地方農產為特色，適合想把地熱公園串成半日或一日的慢旅行者。', tips: '可規劃散步或自行車，農事體驗通常需要事先確認開放日及預約方式。', maps: 'https://www.google.com/maps/search/?api=1&query=%E5%A4%A9%E9%80%81%E5%9F%A4%E4%BC%91%E9%96%92%E8%BE%B2%E6%A5%AD%E5%8D%80', source: 'https://travel.yilan.gov.tw/zh-tw/attraction/275/' },
+  { name: '天送埤車站', slug: 'tiansongpi-station', tagline: '舊鐵道與三星地方記憶', about: '天送埤周邊的舊車站地景可作為農村散步的一站，觀察昔日林業運輸和聚落發展的關聯。', tips: '與休閒農業區一起安排較順路；停車及展示空間是否開放，請現場核實。', maps: 'https://www.google.com/maps/search/?api=1&query=%E5%A4%A9%E9%80%81%E5%9F%A4%E8%BB%8A%E7%AB%99', source: 'https://travel.yilan.gov.tw/zh-tw/attraction/249/' },
+];
+const jsonLd = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
+  { '@type': 'ListItem', position: 2, name: '周邊景點', item: `${site.url}/nearby-attractions` },
+] };
+---
+<BaseLayout title="清水地熱公園周邊景點｜長埤湖、天送埤、三星一日遊" description="清水地熱公園周邊順遊指南：長埤湖風景區、天送埤休閒農業區、天送埤車站，附各地獨立 Google Maps 搜尋、路線安排與官方資料來源。" jsonLd={jsonLd}>
+  <Header /><main id="main-content">
+    <section class="hero" aria-labelledby="page-title"><img class="hero-image" src="/images/geothermal-pool.webp" alt="清水地熱公園溪谷地熱池與周邊山林實景" width="1600" height="1067" fetchpriority="high" /><div class="hero-shade"></div><div class="shell hero-content"><p class="eyebrow light">EXPLORE YILAN</p><h1 id="page-title">清水地熱周邊景點</h1><p class="hero-lead">煮蛋泡腳之外，沿三星與大同的山麓，接一段湖岸散步、農村與舊鐵道旅程。</p></div></section>
+    <section class="section"><div class="shell"><div class="section-heading centered-heading"><p class="eyebrow">NEARBY PLACES</p><h2>三個適合一起安排的停留點</h2><p>以下是不同目的地，連結分別搜尋各景點，避免把所有導航導回清水地熱公園。</p></div>
+      <div class="topic-grid">{places.map((place, index) => <article class="topic-card"><p class="eyebrow">STOP {String(index + 1).padStart(2, '0')}</p><h3>{place.name}</h3><p><strong>{place.tagline}</strong></p><p>{place.about}</p><p>{place.tips}</p>{place.slug && <p><a href={`/guides/${place.slug}`}>閱讀完整景點專頁 →</a></p>}<p><a href={place.maps} target="_blank" rel="noopener noreferrer">Google Maps 專屬搜尋 ↗</a></p><p><a href={place.source} target="_blank" rel="noopener noreferrer">官方旅遊資料 ↗</a></p></article>)}</div>
+    </div></section>
+    <section class="section quick-section"><div class="shell"><div class="section-heading"><p class="eyebrow">ROUTE IDEAS</p><h2>半日與一日路線</h2></div>
+      <div class="topic-grid"><article class="topic-card"><h3>半日輕鬆版</h3><p>上午抵達清水地熱公園 → 購買食材、租竹簍 → 煮食與足湯 → 返程經長埤湖短暫散步。園區建議預留 2–3 小時。</p><a href="/visitor-center">先看服務中心準備事項 →</a></article><article class="topic-card"><h3>三星慢遊一日版</h3><p>清水地熱公園 → 長埤湖 → 天送埤車站與休閒農業區。雨天把戶外停留縮短；農業體驗以官方預約資訊為準。</p><a href="/itinerary">延伸一日遊安排 →</a></article></div>
+      <h3>從哪裡開始導航？</h3><p>自駕可先使用<a href={site.mapsUrl} target="_blank" rel="noopener noreferrer">清水地熱公園主要定位</a>；再逐站切換上方各景點地圖。此頁提供景點名稱搜尋連結，尚未逐一取得各地 Google Place ID，請在導航前核對目的地名稱。</p>
+      <h3>周邊是否可以步行串聯？</h3><p>這些是跨村落的不同景點，不建議當作公園內的步行動線。開車或依當天公車班次安排較合適；山區路況與實際行車時間請用地圖即時確認。</p>
+    </div></section>
+    <TopicLinks current="nearby-attractions" />
+  </main><Footer />
+</BaseLayout>

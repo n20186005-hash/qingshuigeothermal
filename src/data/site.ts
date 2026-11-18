@@ -38,6 +38,7 @@ export const navigation = [
   { label: '交通停車', href: '#transport' },
   { label: '季節策略', href: '#season' },
   { label: '常見問題', href: '#faq' },
+  { label: '周邊景點', href: '/nearby-attractions' },
 ];
 
 // 專題頁（與首頁互鏈，擴大收錄面；slug 即路徑）
@@ -47,6 +48,15 @@ export const topicLinks = [
   { slug: 'transportation', label: '交通停車', desc: '自駕、綠 17 公車與停車費' },
   { slug: 'tickets-and-facilities', label: '門票與設施', desc: '免費入園、足湯與泡湯' },
   { slug: 'itinerary', label: '一日遊路線', desc: '半日／全日行程與周邊順遊' },
+  { slug: 'visitor-center', label: '遊客服務中心', desc: '買食材、租竹簍、設施與入園順序' },
+  { slug: 'nearby-attractions', label: '周邊景點', desc: '長埤湖、天送埤與三星順遊規劃' },
+  { slug: 'guides/geothermal-education', label: '地熱教育與發電史', desc: '教育館、地熱資源與能源故事' },
+  { slug: 'guides/food-prices-basket-rental', label: '食材價格與竹簍', desc: '看懂收費項目與租借流程' },
+  { slug: 'guides/family-guide', label: '清水地熱親子遊', desc: '煮蛋、泡腳與兒童安全規劃' },
+  { slug: 'guides/changpi-lake', label: '長埤湖風景區', desc: '湖岸步道、賞鳥與順遊交通' },
+  { slug: 'guides/tiansongpi-station', label: '天送埤車站', desc: '日式木造站房與林業鐵道歷史' },
+  { slug: 'guides/sanxing-day-trip-food', label: '三星一日遊與美食', desc: '三星蔥料理、卜肉與農村行程' },
+  { slug: 'guides/rainy-winter-holiday-guide', label: '雨天冬季假日攻略', desc: '天氣、人潮與安全備案' },
 ];
 
 export const quickFacts = [

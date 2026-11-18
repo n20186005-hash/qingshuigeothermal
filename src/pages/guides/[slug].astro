@@ -1,0 +1,78 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
+import { expansionGuides, type Guide } from '@/data/expansion';
+import { site, rating } from '@/data/site';
+
+const guide = expansionGuides.find((item) => item.slug === Astro.params.slug) as Guide | undefined;
+if (!guide) return Astro.redirect('/404');
+const pageUrl = `${site.url}/guides/${guide.slug}`;
+const hasImage = !!guide.image;
+const isPark = !['changpi-lake', 'tiansongpi-station', 'sanxing-day-trip-food'].includes(guide.slug);
+const detailPhoto = guide.slug === 'changpi-lake' ? '/images/changpi-lake-detail.jpg' : guide.slug === 'tiansongpi-station' ? '/images/tiansongpi-station-detail.jpg' : undefined;
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
+    { '@type': 'ListItem', position: 2, name: '延伸專題', item: `${site.url}/nearby-attractions` },
+    { '@type': 'ListItem', position: 3, name: guide.name, item: pageUrl },
+  ] },
+  { '@context': 'https://schema.org', '@type': 'TouristAttraction', name: guide.name, description: guide.description, url: pageUrl, hasMap: guide.map, address: guide.address },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: guide.faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
+];
+---
+<BaseLayout title={guide.name} description={guide.description} jsonLd={jsonLd}>
+  <Header />
+  <main id="main-content">
+    <section class:list={['hero', !hasImage && 'guide-plain-hero']} aria-labelledby="page-title">
+      {guide.image && <img class="hero-image" src={guide.image} alt={guide.imageAlt} width="1600" height="1067" fetchpriority="high" />}
+      <div class="hero-shade"></div>
+      <div class="shell hero-content">
+        <p class="eyebrow light">{guide.category}</p><h1 id="page-title">{guide.name}</h1>
+        <p class="hero-lead">{guide.tagline}</p>
+        <p class="guide-hero-facts">{guide.hours}　·　<a href={guide.map} target="_blank" rel="noopener noreferrer">獨立地圖定位 ↗</a></p>
+      </div>
+    </section>
+    <section class="section quick-section" id="overview"><div class="shell">
+      <div class="section-heading centered-heading"><p class="eyebrow">DISCOVER</p><h2>探索{guide.name}</h2><p>{guide.lead}</p></div>
+      <div class="fact-grid">
+        <article class="fact-card"><p>景點類型</p><strong>{guide.category}</strong><small>{guide.tagline}</small></article>
+        <article class="fact-card"><p>開放資訊</p><strong>出發前核實</strong><small>{guide.hours}</small></article>
+        <article class="fact-card"><p>門票與費用</p><strong>依項目區分</strong><small>{guide.admission}</small></article>
+        <article class="fact-card"><p>地址與導航</p><strong>專屬地點</strong><small>{guide.address}</small></article>
+      </div>
+    </div></section>
+    <section class="section" id="history"><div class="shell"><div class="section-heading"><p class="eyebrow">ABOUT & HISTORY</p><h2>歷史、文化與地方脈絡</h2></div><p class="guide-body-copy">{guide.history}</p><div class="section-heading"><p class="eyebrow">HIGHLIGHTS</p><h2>景點特色與觀察重點</h2></div>
+      <div class="topic-grid">{guide.features.map((feature, i) => <article class="topic-card"><p class="eyebrow">HIGHLIGHT {String(i+1).padStart(2,'0')}</p><h3>{['自然與景觀','地方特色','參觀體驗'][i] ?? '看點'}</h3><p>{feature}</p></article>)}</div>
+      {detailPhoto && <figure class="guide-detail-photo"><img src={detailPhoto} width="480" height="360" loading="lazy" alt={guide.slug === 'changpi-lake' ? '長埤湖風景區官方實景補充照片' : '天送埤車站官方實景補充照片'} /><figcaption>景點實景補充照片｜來源：宜蘭縣政府「宜蘭勁好玩」觀光頁</figcaption></figure>}
+    </div></section>
+    <section class="section quick-section" id="route"><div class="shell"><div class="section-heading"><p class="eyebrow">PLAN YOUR VISIT</p><h2>建議遊覽路線</h2><p>依現場開放、交通與天候彈性調整，以下為建議順序而非保證時刻表。</p></div>
+      <div class="topic-grid">{guide.steps.map((step, i) => <article class="topic-card"><p class="eyebrow">STEP {String(i+1).padStart(2,'0')}</p><h3>{i + 1}. {step.split('，')[0]}</h3><p>{step}</p></article>)}</div>
+    </div></section>
+    <section class="section" id="tips"><div class="shell"><div class="section-heading"><p class="eyebrow">BEFORE YOU GO</p><h2>遊覽須知與拍照建議</h2></div>
+      <div class="topic-grid">{guide.advice.map((tip, i) => <article class="topic-card"><h3>提醒 {String(i + 1).padStart(2, '0')}</h3><p>{tip}</p></article>)}</div>
+      <h3>拍照機位與安全</h3><p class="guide-body-copy">{guide.photography}</p><h3>交通方式</h3><p class="guide-body-copy">{guide.transport}</p>
+    </div></section>
+    <section class="section quick-section" id="faq"><div class="shell"><div class="section-heading"><p class="eyebrow">FAQ</p><h2>常見問題</h2></div>
+      {guide.faq.map((f) => <article class="guide-faq"><h3>{f.q}</h3><p>{f.a}</p></article>)}
+      <h3>位置與地圖</h3><p>{guide.address}</p><p><a href={guide.map} target="_blank" rel="noopener noreferrer">在 Google Maps 開啟「{guide.name}」專屬搜尋 ↗</a></p>
+      <h3>官方資料與延伸閱讀</h3><ul>{guide.sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener noreferrer">{s.label} ↗</a></li>)}</ul>
+      <p>變動資訊以管理單位或現場公告為準；本頁不展示未獨立核對的其他景點 Google 評價數。{isPark ? `清水地熱公園評價參考：${rating.source}，${rating.syncMonth}同步。` : ''}</p>
+    </div></section>
+    <section class="section"><div class="shell"><div class="section-heading"><p class="eyebrow">EXPLORE NEARBY</p><h2>周邊順遊與更多攻略</h2></div><div class="topic-grid"><a class="topic-card" href="/nearby-attractions"><h3>清水地熱周邊景點</h3><p>探索長埤湖、天送埤與三星地區的站內路線。</p><span class="topic-go">查看周邊專題 →</span></a><a class="topic-card" href="/itinerary"><h3>半日與一日遊規劃</h3><p>依交通與停留時間安排，不必匆忙趕點。</p><span class="topic-go">查看行程 →</span></a></div></div></section>
+    <TopicLinks />
+  </main>
+  <Footer />
+</BaseLayout>
+<style>
+  .guide-plain-hero { background: linear-gradient(115deg,#183d34,#2d6a5a); }
+  .guide-hero-facts { color: white; margin-top: 1rem; }
+  .guide-hero-facts a { color: #ffe2a5; text-decoration: underline; }
+  .guide-body-copy { max-width: 860px; line-height: 1.95; margin-bottom: 2rem; }
+  .guide-faq { padding: 1.25rem 0; border-bottom: 1px solid #cbd6d0; }
+  .guide-faq p { line-height: 1.85; }
+  .guide-detail-photo { max-width: 720px; margin: 2rem auto; }
+  .guide-detail-photo img { width: 100%; height: auto; border-radius: 1rem; }
+  .guide-detail-photo figcaption { margin-top: .75rem; font-size: .85rem; color: #53635b; }
+</style>

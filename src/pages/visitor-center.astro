@@ -1,0 +1,52 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import TopicLinks from '@/components/TopicLinks.astro';
+import { site } from '@/data/site';
+
+const jsonLd = [
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: '首頁', item: `${site.url}/` },
+    { '@type': 'ListItem', position: 2, name: '遊客服務中心', item: `${site.url}/visitor-center` },
+  ] },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: [
+    { '@type': 'Question', name: '清水地熱公園遊客服務中心能買食材嗎？', acceptedAnswer: { '@type': 'Answer', text: '園區設有食材販售與竹簍租借服務；品項、售價和供應狀況依現場公告。' } },
+    { '@type': 'Question', name: '遊客服務中心需要另外買票嗎？', acceptedAnswer: { '@type': 'Answer', text: '清水地熱公園一般入園免費；煮食食材、器具租借、部分體驗及設施另有費用，請分別確認。' } },
+  ] },
+];
+---
+<BaseLayout title="清水地熱公園遊客服務中心｜食材、竹簍與設施" description="清水地熱公園遊客服務中心攻略：食材購買、竹簍租借、洗手間、停車與煮食動線；附地圖、一般開放時間及現場核實提醒。" jsonLd={jsonLd}>
+  <Header />
+  <main id="main-content">
+    <section class="hero" aria-labelledby="page-title">
+      <img class="hero-image" src="/images/geothermal-basket.webp" width="1600" height="1067" alt="清水地熱公園遊客使用竹簍煮食的實景" fetchpriority="high" />
+      <div class="hero-shade"></div>
+      <div class="shell hero-content"><p class="eyebrow light">VISITOR CENTER</p><h1 id="page-title">遊客服務中心</h1><p class="hero-lead">第一次來先掌握食材、器具與服務設施，從容安排地熱煮食體驗。</p></div>
+    </section>
+    <section class="section quick-section"><div class="shell">
+      <div class="section-heading centered-heading"><p class="eyebrow">BEFORE COOKING</p><h2>入園後建議先做四件事</h2><p>服務中心位於清水地熱公園園區內，與地熱煮食區可串成一段輕鬆步行動線。</p></div>
+      <div class="fact-grid">
+        <article class="fact-card"><p>01 · 確認公告</p><strong>開園狀態</strong><small>一般時段 09:00–17:00，特殊天候與維護可能調整。</small></article>
+        <article class="fact-card"><p>02 · 準備食材</p><strong>買或自備</strong><small>雞蛋、玉米、地瓜等常見水煮食材，現場供應依櫃檯為準。</small></article>
+        <article class="fact-card"><p>03 · 器具</p><strong>租竹簍</strong><small>確認費用、押金、使用方式與歸還位置。</small></article>
+        <article class="fact-card"><p>04 · 安全</p><strong>由成人操作</strong><small>煮食池接近沸騰，請勿讓兒童自行提取竹簍。</small></article>
+      </div>
+    </div></section>
+    <section class="section"><div class="shell"><div class="section-heading"><p class="eyebrow">PRACTICAL GUIDE</p><h2>服務中心與主要設施</h2></div>
+      <div class="topic-grid">
+        <article class="topic-card"><h3>食材與竹簍</h3><p>食材購買與竹簍租借可先向服務中心詢問。價格不宜依舊遊記估算，請看當日價目表；自備食材也要遵循園區容器規定。</p><a href="/geothermal-cooking">查看煮食時間與安全 →</a></article>
+        <article class="topic-card"><h3>休息與洗手間</h3><p>煮食前先確認洗手間、洗手處與休憩座位位置。假日人潮較多，取餐後可避開煮食池邊緣尋找安全位置用餐。</p><a href="/tickets-and-facilities">查看園區設施 →</a></article>
+        <article class="topic-card"><h3>停車與進出動線</h3><p>自駕先確認停車區和收費方式；搭乘公車應先查去回班次。園區道路及山區天氣有變化，預留返程時間。</p><a href="/transportation">查看交通停車 →</a></article>
+      </div>
+    </div></section>
+    <section class="section quick-section"><div class="shell"><div class="section-heading"><p class="eyebrow">LOCATION & FAQ</p><h2>位置與出發前提醒</h2></div>
+      <p><strong>地址：</strong>{site.address}（清水地熱公園園區內）。服務中心與公園是相關但不同的搜尋目的地；導航入口以園區地圖和現場標示為準。</p>
+      <p><a href="https://www.google.com/maps/search/?api=1&query=%E6%B8%85%E6%B0%B4%E5%9C%B0%E7%86%B1%E5%85%AC%E5%9C%92%E9%81%8A%E5%AE%A2%E6%9C%8D%E5%8B%99%E4%B8%AD%E5%BF%83" target="_blank" rel="noopener noreferrer">在 Google Maps 尋找「清水地熱公園遊客服務中心」 ↗</a>　<a href={site.mapsUrl} target="_blank" rel="noopener noreferrer">公園主要定位 ↗</a></p>
+      <h3>可以先訂食材或線上買票嗎？</h3><p>清水地熱公園一般入園免費，不代表食材、租借與其他收費設施免費。若看到第三方「套票」，先確認包含哪些服務、使用日期和退改規則，勿與入園門票混淆。</p>
+      <h3>雨天適合來嗎？</h3><p>一般小雨不等於必然休園，但遇豪雨、颱風或溪谷告警應遵從公告。<a href="/opening-hours">查看開放與休園提醒</a>。</p>
+      <p>資料對照：<a href="https://travel.yilan.gov.tw/zh-tw/attraction/251/" target="_blank" rel="noopener noreferrer">宜蘭勁好玩清水地熱公園介紹 ↗</a>。設施與價格屬變動資訊，出發當日請現場核實。</p>
+    </div></section>
+    <TopicLinks current="visitor-center" />
+  </main><Footer />
+</BaseLayout>

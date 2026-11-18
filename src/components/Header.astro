@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { navigation, site } from '@/data/site';
+const anchorHref = (href: string) => href.startsWith('#') && Astro.url.pathname !== '/' ? `/${href}` : href;
 ---
 <header class="site-header" data-header>
   <div class="shell header-inner">
@@ -15,10 +16,10 @@ import { navigation, site } from '@/data/site';
     </a>
 
     <nav class="desktop-nav" aria-label="主要導覽">
-      {navigation.map((item) => <a href={item.href}>{item.label}</a>)}
+      {navigation.map((item) => <a href={anchorHref(item.href)}>{item.label}</a>)}
     </nav>
 
-    <a class="header-cta" href="#transport">
+    <a class="header-cta" href={anchorHref('#transport')}>
       <Icon name="route" class="size-4" />
       規劃前往
     </a>
@@ -31,7 +32,7 @@ import { navigation, site } from '@/data/site';
   </div>
   <nav class="mobile-menu" id="mobile-menu" aria-label="行動版導覽" data-mobile-menu>
     <div class="shell">
-      {navigation.map((item) => <a href={item.href}>{item.label}<Icon name="arrow" class="size-4" /></a>)}
+      {navigation.map((item) => <a href={anchorHref(item.href)}>{item.label}<Icon name="arrow" class="size-4" /></a>)}
     </div>
   </nav>
 </header>
